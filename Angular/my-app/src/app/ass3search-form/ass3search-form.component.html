@@ -1,0 +1,330 @@
+<div class="container p-3 my-3 border bg-dark text-white">
+    <h2>Product Search</h2>
+    <br>
+    <form>
+        <div class="form-group row">
+            <span class="req col-sm-2 col-form-label">
+            <label for="keyword">Keyword</label>
+            </span>
+            <div class="col-sm-10">
+                <input type="text" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" class="form-control-plaintext" id="keyword" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <span class="col-sm-2 col-form-label">
+            <label for="category">Category</label>
+            </span>
+            <div class="col-sm-10">
+                <select name="category" [(ngModel)]="category" id="category" value="AllCategory">
+                    <option value="AllCategory">All Category</option>
+                    <option value="art">Art</option>
+                    <option value="baby">Baby</option>
+                    <option value="books">Books</option>
+                    <option value="clothingShoesAccessories">Clothing, Shoes &amp Accessories</option>
+                    <option value="computersTabletsNetworking">Computers/Tablets &amp Networking</option>
+                    <option value="healthBeauty">Health &amp Beauty</option>
+                    <option value="music">Music</option>
+                    <option value="videoGamesConsoles">Video Games &amp Consoles</option>
+
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <span class="col-sm-2 col-form-label">
+                <label for="condition">Condition:</label>                
+            </span>
+            <div class="col-sm-10">
+                <input type="checkbox" [(ngModel)]="new" id="new" name="new" value="">
+                <label for="from">New </label>
+                <input type="checkbox" [(ngModel)]="used" id="used" name="used" value="">
+                <label for="from">Used </label>
+                <input type="checkbox" [(ngModel)]="unspecified" id="unspecified" name="unspecified" value="">
+                <label for="from">Unspecified </label>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <span class="col-sm-2 col-form-label">
+                <label for="shippingOptions">Shipping Options:</label>                
+            </span>
+            <div class="col-sm-10">
+                <input type="checkbox" [(ngModel)]="localPickup" id="localPickup" name="localPickup" value="">
+                <label for="from">Local Pickup </label>
+                <input type="checkbox" [(ngModel)]="freeShipping" id="freeShipping" name="freeShipping" value="">
+                <label for="from">Free Shipping </label>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <span class="col-sm-2 col-form-label">
+                <label for="distance">Distance(Miles)</label>                
+            </span>
+            <div class="col-sm-10">
+                <select name="distance" [(ngModel)]="distance" id="distance" value="distance">
+                    <option value="">10</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <span class="req col-sm-2 col-form-label">
+                <label for="from">From</label>                
+            </span>
+            <div class="col-sm-10">
+                <input class="form-check-input" [(ngModel)]="currentLocation" type="radio" name="currentLocation" id="currentLocation" value="currentLocation" (change)="getCurLoc()" checked>
+                <label class="form-check-label" for="currentLocation">'Current Location'</label>
+                <br>
+                <input class="form-check-input" [(ngModel)]="other" type="radio" name="other" id="other" value="other">
+                <label class="zip-label form-check-label" for="other">Other. Please specify zip code:</label>
+                <br>
+                
+                <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control-plaintext" id="zip" value="" (input)="onZipCodeChange()">
+                <div *ngIf="suggestions?.length" class="autocomplete-suggestions">
+                    <div *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+                        {{ suggestion }}
+                    </div>
+                </div>
+            
+
+            </div>
+        </div>
+
+        <button type = "search" form="searchForm" value="search" (click)="onSearchForm()">Search</button>
+        <button type = "clear" form="clear" value="clear">Clear</button>
+
+
+
+        
+    </form>
+
+    
+</div>
+<div *ngIf="!showProductDetails" class="table-component">
+<table *ngIf="paginatedItems.length > 0" class="table-striped table-dark">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Shipping</th>
+        <th>Zip</th>
+        <th>Wish List</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of paginatedItems; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td><img [src]="item.image" alt="N/A" width="50"></td>
+        <td>
+            <a (click)="onProductClick(item.itemId)">{{ item.title }}</a></td> 
+            <!-- {{ item.title }}</td>  -->
+        <td>{{ item.price || 'N/A' }}</td>
+        <td>
+          {{ item.shipping || 'N/A' }}
+        </td>
+        <td>{{ item.zip|| 'N/A' }}</td>
+        <td><button (click) = "addToWishlist(item)">Add to Wish List</button></td>
+      </tr>
+    </tbody>
+</table>
+
+  <!-- Pagination controls 
+  <div *ngIf="items.length > 0">
+    <button>Previous</button>
+    <span>1</span> 
+    <button>Next</button>
+  </div>>-->
+  
+  <div *ngIf="totalItems > itemsPerPage" class="pagination-controls">
+    <button (click)="selectPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+    <!-- Dynamically generate page numbers based on the data -->
+    <button *ngFor="let page of pages" (click)="selectPage(page)" [class.active]="currentPage === page">{{ page }}</button>
+    <button (click)="selectPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+  </div>
+</div>
+  
+
+
+  
+<div class="">
+    <a [href] ="shareURL" target = "_blank">
+        <img src = "./assets/facebook.png" >
+    </a>
+    <!-- Tab links -->
+    <ul class="nav nav-tabs">
+      <li class="nav-item" (click)="selectTab('product')">
+        <a class="nav-link" [class.active]="activeTab === 'product'">Product</a>
+      </li>
+      <li class="nav-item" (click)="selectTab('photos')">
+        <a class="nav-link" [class.active]="activeTab === 'photos'">Photos</a>
+      </li>
+      <li class="nav-item" (click)="selectTab('shipping')">
+        <a class="nav-link" [class.active]="activeTab === 'shipping'">Shipping</a>
+      </li>
+      <li class="nav-item" (click)="selectTab('seller')">
+        <a class="nav-link" [class.active]="activeTab === 'seller'">Seller</a>
+      </li>
+      <li class="nav-item" (click)="selectTab('similar')">
+        <a class="nav-link" [class.active]="activeTab === 'similar'">Similar Products</a>
+      </li>
+    </ul>
+  
+    <!-- Tab content -->
+    <div class="tab-content">
+      <!-- Product Details -->
+      <div *ngIf="activeTab === 'product'">
+        <table class="table table-dark">
+            <tbody *ngIf="prodInfo.length > 0">
+                <!-- <div *ngIf="prodInfo.length > 0" class="table-striped table-dark"> -->
+                <tr id="productImagesRow">
+                    <td>Product Images</td>
+                </tr>
+                <tr id="priceRow">
+                    <td>Price</td>
+                    <td id="priceValue">{{ prodInfo[0].price}}</td>
+                </tr>                       
+                <tr id="locationRow">
+                    <td>Location</td>
+                    <td id="locationValue">{{prodInfo[0].location}}</td>
+                </tr>
+                <tr id="returnPolicyRow">
+                    <td>Return Policy (US)</td>
+                    <td id="returnPolicyValue">{{prodInfo[0].returnPolicy}}</td>
+                </tr>               
+                <ng-container *ngFor="let items of prodInfo[0].itemSpecifics">
+                    <tr *ngIf="items">
+                    <td>{{ items.Name }}</td>
+                    <td>{{ items.Value }}</td>
+                    </tr>
+                </ng-container>
+                <tr id="itemSpecificsRow">
+                    <td></td>
+                    <td id="itemSpecificsValue"></td>
+                </tr>
+            <!-- </div> -->
+            </tbody>
+          </table>
+      </div>
+  
+      <!-- Photos -->
+      <div *ngIf="activeTab === 'photos'">
+       <!-- <DISPLAY HERE> -->
+        <div *ngIf="showImageModal" class="carousel-container">
+            <!-- Carousel Wrapper -->
+            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+              <!-- Carousel Inner -->
+              <div class="carousel-inner">
+                <!-- Use *ngFor to iterate over the images and display them -->
+                <div *ngFor="let img of prodImages; let i = index" [class]="i === 0 ? 'carousel-item active' : 'carousel-item'">
+                  <img [src]="img.link" class="d-block w-100" alt="...">
+                </div>
+              </div>
+              <!-- Carousel Controls -->
+              <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+  
+      <!-- Shipping Information -->
+      <div *ngIf="activeTab === 'shipping'">
+        <table class="table">
+            <tbody *ngIf="shippingInfo1.length > 0">
+                <tr id="CostRow">
+                    <td>Cost</td>
+                    <td id="CostVal">{{ shippingInfo1[0].cost }}</td>
+                </tr>
+                <tr id="LocationseRow">
+                    <td>Locations</td>
+                    <td id="LocationsVal">{{ shippingInfo1[0].locations }}</td>
+                </tr>                       
+                <tr id="HandlingTimeRow">
+                    <td>Handling Time</td>
+                    <td id="HandlingTimeVal">{{ shippingInfo1[0].handlingTime }}</td>
+                </tr>
+                <tr id="ExpeditedRow">
+                    <td>Expedited Shipping</td>
+                    <td id="ExpeditedRowVal">{{shippingInfo1[0].returnPolicy}}</td>
+                </tr>   
+                <tr id="OneDayShippingRow">
+                    <td>One Day Shipping</td>
+                    <td id="OneDayShippingVal">{{ shippingInfo1[0].oneDay}}</td>
+                </tr>                       
+                <tr id="ReturnsAcceptedRow">
+                    <td>Returns Accepted</td>
+                    <td id="ReturnsAcceptedVal">{{ shippingInfo1[0].returns }}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+  
+      <!-- Seller Information -->
+      <div *ngIf="activeTab === 'seller'">
+        <table class="table">
+            <tbody *ngIf="shippingInfo1.length > 0">
+                <tr id="FeedbackScoreRow">
+                    <td>Feedback Score</td>
+                    <td id="FeedbackScoreVal">{{ sellerInfo[0].feedbackScore }}</td>
+                </tr>
+                <tr id="PopularityRow">
+                    <td>Popularity</td>
+                    <td id="PopularityVal">{{ sellerInfo[0].popularity}}</td>
+                </tr>                       
+                <tr id="FeedbackRatingStarRow">
+                    <td>Feedback Rating Star</td>
+                    <td id="FeedbackRatingStarVal">{{ sellerInfo[0].feedbackRatingStar }}</td>
+                </tr>
+                <tr id="TopRatedRow">
+                    <td>Top Rated</td>
+                    <td id="TopRatedVal">{{sellerInfo[0].topRated}}</td>
+                </tr>   
+                <tr id="StoreNameRow">
+                    <td>Store Name</td>
+                    <td id="StoreNameVal">{{ sellerInfo[0].storeName}}</td>
+                </tr>                       
+                <tr id="StoreURLRow">
+                    <td>Store URL</td>
+                    <a [href]="sellerInfo[0].storeURL" target="_blank">{{ sellerInfo[0].storeName }}</a>
+                </tr>
+            </tbody>
+            <!-- product.timeLeft.split('P')[1].split('D')[0] -->
+        </table>
+      </div>
+  
+      <!-- Similar Products -->
+      <div *ngIf="activeTab === 'similar'">
+        <!-- Container for the product cards -->
+        <div class="product-container">
+            <div *ngFor="let product of similarProds.slice(0, displayCount); let i = index" class="product-card">
+                <img [src]="product.imageURL" alt="{{product.prodName}}" class="product-image">
+                <div class="product-details">
+                    <h3>{{product.prodName}}</h3>
+                    <p>Shipping Cost: {{product.shippingCost}}</p>
+                    <p>Days Left: {{product.daysLeft}}</p>
+                </div>
+                <br>
+            </div>
+        </div>
+
+        <!-- Show more button -->
+        <button *ngIf="displayCount < similarProds.length && !showAll" (click)="showMore()">Show More</button>
+        <button *ngIf="showAll" (click)="showLess()">Show Less</button>
+
+      </div>
+     
+    </div>
+    
+
+  </div>
+  
+  

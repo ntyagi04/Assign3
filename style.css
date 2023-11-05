@@ -1,0 +1,19 @@
+.req:after {
+    content:" *";
+    color: red;
+}
+.container{
+    background-color:black;
+    color:white;
+    padding-right: 0px;
+    padding-left: 266px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 20px;
+}
+.zip-label{
+    width:90%;
+}
+button{
+    margin-bottom:20px;
+}

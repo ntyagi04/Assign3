@@ -1,0 +1,118 @@
+.req:after {
+    content:" *";
+    color: red;
+}
+.container{
+    background-color:black;
+    padding-right: 0px;
+    padding-left: 266px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 20px;
+}
+.zip-label{
+    width:90%;
+}
+button{
+    margin-bottom:20px;
+}
+.autocomplete-suggestions {
+    border: 1px solid #ccc;
+    max-height: 100px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    background-color: #ffffff;
+    z-index: 1000;
+}
+
+.autocomplete-suggestions div {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.autocomplete-suggestions div:hover {
+    background-color: #f0f0f0;
+}
+/* .tabs div {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.tabs div.active-tab {
+    background-color: rgba(240, 236, 236, 0.867);
+} */
+
+.product-container {
+    display: flex;
+    flex-direction: column; /* This will arrange children in a vertical column */
+    align-items: center; /* This will center them horizontally */
+    width: 100%; /* This defines the width of the container */
+}
+
+.product-card {
+    display: block; /* This ensures each card is a block-level element */
+    width: 100%; /* This sets the width of each card to the full width of the container */
+    margin-bottom: 10px; /* This adds space between the cards */
+    /* Remove any float or display: inline-block if it exists */
+}
+
+.product-image {
+    max-width: 100%; /* This ensures images are responsive and do not overflow */
+    height: auto; /* Maintain aspect ratio */
+}
+.product-card:hover {
+    transform: scale(1.05);
+}
+
+
+
+.product-details {
+    padding: 10px;
+}
+
+.carousel-container {
+    width: 100%;
+    max-width: 600px; /* Adjust the width as per your requirement */
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .carousel-inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .carousel-item {
+    position: relative;
+    display: none;
+    float: left;
+    width: 100%;
+    transition: transform 0.6s ease-in-out;
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  .carousel-item.active {
+    display: block;
+  }
+  
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 5%;
+  }
+  
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Ensure the images fit well */
+  .carousel img {
+    width: 100%;
+    display: block;
+    height: auto;
+  }
+  

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel ="stylesheet" href = "style.css">
+    </head>
+
+    <body>
+        <div class="container p-3 my-3 border">
+            <h2>Product Search</h2>
+            <br>
+            <form>
+                <div class="form-group row">
+                    <span class="req col-sm-2 col-form-label">
+                    <label for="keyword">Keyword</label>
+                    </span>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control-plaintext" id="keyword" value="" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <span class="col-sm-2 col-form-label">
+                    <label for="category">Category</label>
+                    </span>
+                    <div class="col-sm-10">
+                        <select name="category" id="category" value="AllCategory">
+                            <option value="AllCategory">All Category</option>
+                            <option value="art">Art</option>
+                            <option value="baby">Baby</option>
+                            <option value="books">Books</option>
+                            <option value="clothingShoesAccessories">Clothing, Shoes &amp Accessories</option>
+                            <option value="computersTabletsNetworking">Computers/Tablets &amp Networking</option>
+                            <option value="healthBeauty">Health &amp Beauty</option>
+                            <option value="music">Music</option>
+                            <option value="videoGamesConsoles">Video Games &amp Consoles</option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <span class="col-sm-2 col-form-label">
+                        <label for="condition">Condition:</label>                
+                    </span>
+                    <div class="col-sm-10">
+                        <input type="checkbox" id="new" name="new" value="">
+                        <label for="from">New </label>
+                        <input type="checkbox" id="used" name="used" value="">
+                        <label for="from">Used </label>
+                        <input type="checkbox" id="unspecified" name="unspecified" value="">
+                        <label for="from">Unspecified </label>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <span class="col-sm-2 col-form-label">
+                        <label for="shippingOptions">Shipping Options:</label>                
+                    </span>
+                    <div class="col-sm-10">
+                        <input type="checkbox" id="localPickup" name="localPickup" value="">
+                        <label for="from">Local Pickup </label>
+                        <input type="checkbox" id="freeShipping" name="freeShipping" value="">
+                        <label for="from">Free Shipping </label>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <span class="col-sm-2 col-form-label">
+                        <label for="distance">Distance(Miles)</label>                
+                    </span>
+                    <div class="col-sm-10">
+                        <select name="distance" id="distance" value="distance">
+                            <option value="ten">10</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <span class="req col-sm-2 col-form-label">
+                        <label for="from">From</label>                
+                    </span>
+                    <div class="col-sm-10">
+                        <input class="form-check-input" type="radio" name="currentLocation" id="currentLocation" value="currentLocation" checked>
+                        <label class="form-check-label" for="currentLocation">'Current Location'</label>
+                        <br>
+                        <input class="form-check-input" type="radio" name="other" id="other" value="other">
+                        <label class="zip-label form-check-label" for="other">Other. Please specify zip code:</label>
+                        <br>
+                        <input type="text" class="form-control-plaintext" id="zip" value="">
+                    </div>
+                </div>
+
+                <button type = "search" form="searchForm" value="search">Search</button>
+                <button type = "clear" form="clear" value="clear">Clear</button>
+
+
+
+                
+            </form>
+        </div>
+    </body>
+</html>

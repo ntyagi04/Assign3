@@ -17,13 +17,13 @@ import { Renderer2, ElementRef } from '@angular/core';
 
 export class Ass3searchFormComponent{
   keyword: string = '';
-  category: string = '';
+  category: string = 'AllCategory';
   new: string = '';
   used: string = '';
   unspecified: string = '';
   localPickup: string = '';
   freeShipping: string = '';
-  distance: string = '';
+  distance: string = '10';
   currentLocation: string = 'currentLocation';
   other: string = '';
   zipCode: string = '';
@@ -117,15 +117,13 @@ buttonC='results';
     this.zipCode = ''; 
   }
 
-
+onWishListClick(){
+  this.buttonC='wish'
+  this.showProductDetails=false
+}
   onSearchForm() {
     
-
-    // if (!this.keyword.trim()) {
-    //   // Handle the case when the keyword is empty
-    //   alert('Please enter a keyword.');
-    //   return;
-    // }
+this.showProductDetails=false
     const params = new HttpParams({
       fromObject: {
           keyword: this.keyword || '',

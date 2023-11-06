@@ -4,6 +4,7 @@
 }
 .styleTitle:hover{
   text-decoration: 'underline';
+  cursor: pointer;
 }
 .container{
     background-color:black;

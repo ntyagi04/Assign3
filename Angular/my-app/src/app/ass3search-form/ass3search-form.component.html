@@ -127,7 +127,7 @@
 <div class=" p-3 my-3  text-center">
 <button class="btn btn-light" (click)="buttonC='results'" [class.btn-dark]="buttonC === 'results'" 
 [class.btn-white]="buttonC !== 'results'" ><a >Results</a></button>
-        <button class="btn btn-light" (click)="buttonC='wish'" [class.btn-dark]="buttonC === 'wish'" 
+        <button class="btn btn-light" (click)="onWishListClick()" [class.btn-dark]="buttonC === 'wish'" 
         [class.btn-white]="buttonC !== 'wish'"><a >Wish List</a></button>
     </div>
 <div *ngIf="!showProductDetails" class="container bg-white p-3 my-3 text-white">
@@ -146,12 +146,12 @@
       <tbody>
         <tr *ngFor="let item of paginatedItems; let i = index">
           <td class="align-middle text-center">{{ i + 1 }}</td>
-          <td class="align-middle text-center"><a href="{{ item.image }}" target="_blank">
+          <td class="align-middle text-center"><a href="{{ item.image }}" target="_blank" >
             <img [src]="item.image" alt="N/A" style="width:50px; height:auto;">
           </a></td>
           <td class="align-middle" (click)="onProductClick(item.itemId)" >
             <!-- <a href="" class="text-decoration-none">{{ item.title }}</a> -->
-            <a (click)="onProductClick(item.itemId)" class="styleTitle">{{ item.title }}</a>
+            <a (click)="onProductClick(item.itemId)" matTooltip="{{item.title}}" class="styleTitle">{{ item.title }}</a>
           </td>
           <td class="align-middle text-center">{{ item.price || 'N/A' }}</td>
           <td class="align-middle text-center">

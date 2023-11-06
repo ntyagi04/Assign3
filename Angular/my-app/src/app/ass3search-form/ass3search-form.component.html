@@ -132,8 +132,9 @@
           <td class="align-middle text-center"><a href="{{ item.image }}" target="_blank">
             <img [src]="item.image" alt="N/A" style="width:50px; height:auto;">
           </a></td>
-          <td class="align-middle">
-            <a href="" (click)="onProductClick(item.itemId)" class="text-decoration-none">{{ item.title }}</a>
+          <td class="align-middle" (click)="onProductClick(item.itemId)" >
+            <!-- <a href="" class="text-decoration-none">{{ item.title }}</a> -->
+            <a (click)="onProductClick(item.itemId)">{{ item.title }}</a>
           </td>
           <td class="align-middle text-center">{{ item.price || 'N/A' }}</td>
           <td class="align-middle text-center">
@@ -179,25 +180,27 @@
   
 
   
-<div class="">
+<div class="p-3 my-3  text-center">
+  <div class="facebookIcon">
     <a [href] ="shareURL" target = "_blank">
         <img src = "./assets/facebook.png" >
     </a>
+  </div>
     <!-- Tab links -->
     <ul class="nav nav-tabs">
-      <li class="nav-item" (click)="selectTab('product')">
+      <li class="nav-item nav-pills" (click)="selectTab('product')">
         <a class="nav-link" [class.active]="activeTab === 'product'">Product</a>
       </li>
-      <li class="nav-item" (click)="selectTab('photos')">
+      <li class="nav-item nav-pills" (click)="selectTab('photos')">
         <a class="nav-link" [class.active]="activeTab === 'photos'">Photos</a>
       </li>
-      <li class="nav-item" (click)="selectTab('shipping')">
+      <li class="nav-item nav-pills" (click)="selectTab('shipping')">
         <a class="nav-link" [class.active]="activeTab === 'shipping'">Shipping</a>
       </li>
-      <li class="nav-item" (click)="selectTab('seller')">
+      <li class="nav-item nav-pills" (click)="selectTab('seller')">
         <a class="nav-link" [class.active]="activeTab === 'seller'">Seller</a>
       </li>
-      <li class="nav-item" (click)="selectTab('similar')">
+      <li class="nav-item nav-pills" (click)="selectTab('similar')">
         <a class="nav-link" [class.active]="activeTab === 'similar'">Similar Products</a>
       </li>
     </ul>
@@ -206,7 +209,7 @@
     <div class="tab-content">
       <!-- Product Details -->
       <div *ngIf="activeTab === 'product'">
-        <table class="table table-dark">
+        <table class="table table-striped table-dark">
             <tbody *ngIf="prodInfo.length > 0">
                 <!-- <div *ngIf="prodInfo.length > 0" class="table-striped table-dark"> -->
                 <tr id="productImagesRow">
@@ -268,7 +271,7 @@
   
       <!-- Shipping Information -->
       <div *ngIf="activeTab === 'shipping'">
-        <table class="table">
+        <table class="table table-striped table-dark">
             <tbody *ngIf="shippingInfo1.length > 0">
                 <tr id="CostRow">
                     <td>Cost</td>
@@ -300,7 +303,7 @@
   
       <!-- Seller Information -->
       <div *ngIf="activeTab === 'seller'">
-        <table class="table">
+        <table class="table table-striped table-dark">
             <tbody *ngIf="shippingInfo1.length > 0">
                 <tr id="FeedbackScoreRow">
                     <td>Feedback Score</td>
@@ -356,5 +359,5 @@
     
 
   </div>
-  
+
   

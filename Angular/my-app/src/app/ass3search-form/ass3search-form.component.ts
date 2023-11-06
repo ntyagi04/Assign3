@@ -24,7 +24,7 @@ export class Ass3searchFormComponent{
   localPickup: string = '';
   freeShipping: string = '';
   distance: string = '';
-  currentLocation: string = '';
+  currentLocation: string = 'currentLocation';
   other: string = '';
   zipCode: string = '';
   suggestions: string[] = [];

@@ -27,6 +27,7 @@ export class Ass3searchFormComponent{
   currentLocation: string = 'currentLocation';
   other: string = '';
   zipCode: string = '';
+  currLoc:string='';
   suggestions: string[] = [];
   items: any[] = [];
   showProductDetails: boolean = false;
@@ -65,7 +66,9 @@ buttonC='results';
    
   }
   
-
+  ngOnInit(): void {
+    this.getCurLoc()
+   }
   // Function to handle zip code input changes
   onZipCodeChange() {
     if(this.other && !this.zipCode.trim()) {
@@ -96,6 +99,7 @@ buttonC='results';
   getCurLoc() {
     const apiUrl = `https://ipinfo.io/json?token=${this.ipinfoToken}`;
     this.http.get(apiUrl).subscribe((data:any) => {
+      this.currLoc=data?.postal
       console.log(data);  
     });
   }
@@ -115,6 +119,7 @@ buttonC='results';
 
 
   onSearchForm() {
+    
 
     // if (!this.keyword.trim()) {
     //   // Handle the case when the keyword is empty
@@ -131,7 +136,7 @@ buttonC='results';
           localPickup: this.localPickup ? 'true' : 'false',
           freeShipping: this.freeShipping ? 'true' : 'false',
           distance: this.distance || '',
-          zipCode: this.zipCode || ''
+          zipCode: this.other ? this.zipCode : this.currLoc || ''
       }
   });
   console.log(params);

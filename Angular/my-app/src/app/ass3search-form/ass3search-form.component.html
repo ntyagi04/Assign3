@@ -129,7 +129,9 @@
       <tbody>
         <tr *ngFor="let item of paginatedItems; let i = index">
           <td class="align-middle text-center">{{ i + 1 }}</td>
-          <td class="align-middle text-center"><img [src]="item.image" alt="N/A" class="img-fluid" style="width:50px; height:auto;"></td>
+          <td class="align-middle text-center"><a href="{{ item.image }}" target="_blank">
+            <img [src]="item.image" alt="N/A" style="width:50px; height:auto;">
+          </a></td>
           <td class="align-middle">
             <a href="" (click)="onProductClick(item.itemId)" class="text-decoration-none">{{ item.title }}</a>
           </td>

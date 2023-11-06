@@ -151,7 +151,7 @@
           </a></td>
           <td class="align-middle" (click)="onProductClick(item.itemId)" >
             <!-- <a href="" class="text-decoration-none">{{ item.title }}</a> -->
-            <a href="" (click)="onProductClick(item.itemId)" class="styleTitle">{{ item.title }}</a>
+            <a (click)="onProductClick(item.itemId)" class="styleTitle">{{ item.title }}</a>
           </td>
           <td class="align-middle text-center">{{ item.price || 'N/A' }}</td>
           <td class="align-middle text-center">

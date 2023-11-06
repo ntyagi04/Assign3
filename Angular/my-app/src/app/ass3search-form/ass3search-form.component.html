@@ -151,7 +151,7 @@
           </a></td>
           <td class="align-middle" (click)="onProductClick(item.itemId)" >
             <!-- <a href="" class="text-decoration-none">{{ item.title }}</a> -->
-            <a (click)="onProductClick(item.itemId)">{{ item.title }}</a>
+            <a href="" (click)="onProductClick(item.itemId)" class="styleTitle">{{ item.title }}</a>
           </td>
           <td class="align-middle text-center">{{ item.price || 'N/A' }}</td>
           <td class="align-middle text-center">
@@ -197,7 +197,7 @@
   
 
   
-<div class="p-3 my-3  text-center">
+<div class="p-3 my-3  text-center" *ngIf="showProductDetails">
   <div class="facebookIcon">
     <a [href] ="shareURL" target = "_blank">
         <img src = "./assets/facebook.png" >

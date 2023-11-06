@@ -119,6 +119,7 @@ buttonC='results';
 
 
   onSearchForm() {
+    
 
     // if (!this.keyword.trim()) {
     //   // Handle the case when the keyword is empty

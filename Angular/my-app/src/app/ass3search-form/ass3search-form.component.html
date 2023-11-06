@@ -7,15 +7,29 @@
         </div>
     </div>
     <form>
-        <div class="form-group row justify-content-center">
+        <!-- <div class="form-group row justify-content-center">
             
             <label for="keyword" class="col-sm-2 col-form-label text-right">Keyword<span class="req "></span></label>
       
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="keyword" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}"  id="keyword" required>
-            </div>
-        </div>
+                <input type="text" class="form-control" id="keyword" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" required>
+                <span class="req">*</span> 
+              <div *ngIf="!keyword" class="invalid-feedback"> Please enter a keyword.
+                  <div *ngIf="!keyword" class="alert-message">Please enter a keyword.</div>
 
+                </div> 
+        </div> -->
+
+        <div class="form-group row justify-content-center">
+          <label for="keyword" class="col-sm-2 col-form-label text-right">Keyword<span class="req">*</span></label>
+          <div class=
+          "col-sm-4">
+              <input type="text" class="form-control" id="keyword" [(ngModel)]="keyword" name="keyword" #keywordField="ngModel" required>
+              <div *ngIf="keywordField.touched && keywordField.invalid" class="alert-message">
+                  Please enter a keyword.
+              </div>
+          </div>
+      </div>
         <div class="form-group row justify-content-center">
             <label for="category" class="col-sm-2 col-form-label text-right">Category</label>
             <div class="col-sm-4">
@@ -83,7 +97,10 @@
                     <input class="form-check-input" [(ngModel)]="other" type="radio" name="locationOptions" id="other" value="other">
                     <label class="form-check-label" for="other">Other. Please specify zip code:</label>
                 </div>
+                <!-- <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control mt-2" id="zip" value="" (input)="onZipCodeChange()"> -->
                 <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control mt-2" id="zip" value="" (input)="onZipCodeChange()">
+                <div *ngIf="showZipAlert" class="alert-message">Please enter a zip code.</div>
+
                 <div *ngIf="suggestions?.length" class="autocomplete-suggestions ">
                     <div *ngFor="let suggestion of suggestions" class="text-dark" (click)="selectSuggestion(suggestion)">
                         {{ suggestion }}
@@ -100,7 +117,7 @@
                 <button type="submit" class="btn btn-light btn-adjusted text-dark" style="margin-right: 5px;" (click)="onSearchForm()">
                     <i class="fa fa-search"></i> Search
                 </button>
-                <button type="button" class="btn btn-light text-dark">
+                <button type="button" class="btn btn-light text-dark" (click)="clearForm()">
                     <i class="fa fa-bars"></i> Clear
                 </button>
             </div>
@@ -333,21 +350,39 @@
             <!-- product.timeLeft.split('P')[1].split('D')[0] -->
         </table>
       </div>
-  
+
+      <!-- <div *ngFor="let product of similarProducts?.slice(0, initialItemsToShow); let i = index" class="p-3 mb-3 rounded product-card bg-dark text-white">
+        <div class="d-flex justify-content-start align-items-center">
+            <div class="flex-shrink-0">
+                <img [src]="product?.imageURL" alt="Product Image" class="product-image img-fluid mr-3" style="max-width: 100px;">
+            </div>
+        <div class="flex-grow-1" style="text-align: left">
+            <p><a href="{{ product?.viewItemURL }}" class="mb-1 d-block font-weight-bold" style="color: #5ea4bf;">{{ product?.title }}</a></p>
+            <p class="mb-1" style="color: green;">Price: ${{ product?.buyItNowPrice._value_ }}</p>
+            <p class="mb-1" style="color: #DAA520;">Shipping Cost: ${{ product?.shippingCost._value_ }}</p>
+            <p class="mb-0">Days Left: {{ product?.timeLeft.split('P')[1].split('D')[0] }}</p>
+        </div>
+    </div>
+</div> -->
       <!-- Similar Products -->
       <div *ngIf="activeTab === 'similar'">
         <!-- Container for the product cards -->
-        <div class="product-container">
-            <div *ngFor="let product of similarProds.slice(0, displayCount); let i = index" class="product-card">
-                <img [src]="product.imageURL" alt="{{product.prodName}}" class="product-image">
-                <div class="product-details">
-                    <h3>{{product.prodName}}</h3>
-                    <p>Shipping Cost: {{product.shippingCost}}</p>
-                    <p>Days Left: {{product.daysLeft}}</p>
+        <!-- <div class="product-container"> -->
+          <!-- <div class="product-container"> -->
+            <div *ngFor="let product of similarProds.slice(0, displayCount); let i = index" class="product-card p-3 mb-3 rounded product-card bg-dark text-white">
+              <div class="d-flex justify-content-start align-items-center">  
+                <div class="flex-shrink-0">
+                <img [src]="product.imageURL" alt="{{product.prodName}}" class="product-image img-fluid mr-3" style="max-width: 100px;">
+                <div class="product-details mb-1 d-block font-weight-bold" style="color: #5ea4bf">
+                  <p><a href="{{ product?.viewItemURL }}" class="mb-1 d-block font-weight-bold" style="color: #5ea4bf;">{{product?.prodName}}</a></p> 
+                    <p class="mb-1" style="color: green;">Shipping Cost: {{product.shippingCost}}</p>
+                    <p class="mb-0">Days Left: {{product.daysLeft}}</p>
                 </div>
                 <br>
+                </div>
+                </div>
             </div>
-        </div>
+        <!-- </div> -->
 
         <!-- Show more button -->
         <button *ngIf="displayCount < similarProds.length && !showAll" (click)="showMore()">Show More</button>

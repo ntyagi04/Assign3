@@ -57,6 +57,7 @@ buttonC='results';
   //FACEBOOK
   facebookShareMsg: string = ''
   shareURL:string=''
+  showZipAlert:boolean = false;
 
   private ipinfoToken: string = '38d3cd684c4117';
   constructor(private http: HttpClient, private renderer: Renderer2, private el: ElementRef) {
@@ -67,6 +68,14 @@ buttonC='results';
 
   // Function to handle zip code input changes
   onZipCodeChange() {
+    if(this.other && !this.zipCode.trim()) {
+      // Show an alert message
+      this.showZipAlert = true;
+    } else {
+      // Hide the alert message
+      this.showZipAlert = false;
+    }
+
     if (this.zipCode.length > 2) {
         this.http.get(`http://localhost:3000/api/autocomplete-zip?zipCode=${this.zipCode}`)
             .subscribe((data: any) => {
@@ -90,10 +99,28 @@ buttonC='results';
       console.log(data);  
     });
   }
-
+  clearForm(): void {
+    this.keyword = '';
+    this.category = 'AllCategory'; 
+    this.new = '';
+    this.used = '';
+    this.unspecified = '';
+    this.localPickup = '';
+    this.freeShipping = '';
+    this.distance = ''; 
+    this.currentLocation = ''; 
+    this.other = '';
+    this.zipCode = ''; 
+  }
 
 
   onSearchForm() {
+
+    // if (!this.keyword.trim()) {
+    //   // Handle the case when the keyword is empty
+    //   alert('Please enter a keyword.');
+    //   return;
+    // }
     const params = new HttpParams({
       fromObject: {
           keyword: this.keyword || '',

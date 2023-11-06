@@ -134,3 +134,42 @@ button{
     width:fit-content;
   }
 
+  .invalid-feedback {
+    color: #dc3545;
+    display: none;
+  }
+  
+  .invalid-feedback.ng-active {
+    display: block;
+  }
+  
+  .form-control.ng-touched.ng-invalid {
+    border-color: #dc3545;
+  }
+  
+  .req {
+    color: #dc3545;
+  }
+  .alert-message {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  CSS
+
+.product-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.product-image {
+  width: 100%;
+  object-fit: cover;
+}
+
+.product-details {
+  padding: 20px;
+  flex-grow: 1;
+}

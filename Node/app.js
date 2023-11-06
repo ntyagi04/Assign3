@@ -267,7 +267,7 @@ app.get('/api/similarProductsData', async (req, res) => {
                 prodName: item.title ? item.title : 'N/A',
                 price: item.buyItNowPrice.__value__  ? item.buyItNowPrice.__value__ : 'N/A',
                 shippingCost: item.shippingCost.__value__ ? item.shippingCost.__value__ : 'N/A',
-                daysLeft : item.timeLeft ? item.timeLeft : 'N/A'
+                daysLeft : item.timeLeft ? item.timeLeft.split('P')[1].split('D')[0] : 'N/A'
             };
         });
         // console.log("HEHE",processedData)

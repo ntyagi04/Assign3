@@ -119,3 +119,18 @@ button{
     text-decoration: underline;
     cursor: pointer;
   }
+  .singleResultContainer{
+    width:50%;
+    margin-right: auto;
+    margin-left: auto;
+
+  }
+  .facebookIcon{
+    width:25%;
+    height:50%;
+  }
+  .facebookIcon img{
+    height:fit-content;
+    width:fit-content;
+  }
+

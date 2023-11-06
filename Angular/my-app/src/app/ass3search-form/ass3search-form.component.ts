@@ -244,6 +244,7 @@ shareMessage(items: any[],itemId: string) {
 
   //Single Item details --->>>
   onProductClick(itemId: string) {
+    console.log("Inside....");
     this.showProductDetails = true;
     this.selectedProductitemId = itemId;
 
@@ -251,7 +252,7 @@ shareMessage(items: any[],itemId: string) {
         // Process and log the shipping data for the clicked product
        
         this.prodInfo = data;
-
+      console.log("ProductInfro",this.prodInfo)
         this.processProductImages(this.items, itemId);
 
         this.shippingInfo1 = this.processShippingData(this.items, itemId);
@@ -312,6 +313,23 @@ shareMessage(items: any[],itemId: string) {
 	}
   );
 }
+
+removeFromWishlist(item: any) {
+  console.log(item);
+  const wishlistEndpoint = `http://localhost:3000/wishlist/${item.itemId}`; // The Node.js server endpoint for deletion
+
+  this.http.delete(wishlistEndpoint).subscribe(
+	() => {
+  	console.log('Product removed from wishlist');
+  	// Reset the flag to indicate the product is removed from wishlist
+  	item.addedToWishlist = false;
+	},
+	(error:any) => {
+  	console.error('Error removing product from wishlist:', error);
+	}
+  );
+}
+
 
     
 }

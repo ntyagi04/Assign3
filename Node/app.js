@@ -163,7 +163,7 @@ app.get('/api/eBayFormData', async (req, res) => {
           // console.log("ITEMSSSSSSS: ",items);
         let processedData = items.map((item, index) => {
             // console.log("TEST",item.sellingStatus[0]);
-            // console.log("TESTING",item.itemId);
+             //console.log("TESTING",item.itemId);
             return {
                 index: index + 1,
                 image: item.galleryURL ? item.galleryURL : 'N/A',
@@ -171,7 +171,7 @@ app.get('/api/eBayFormData', async (req, res) => {
                 price: item.sellingStatus[0]?.currentPrice?.[0]?.__value__ || "N/A",
                 shipping: item.shippingInfo[0]?.shippingServiceCost?.[0]?.__value__ === '0.0' ? "Free Shipping" : (item.shippingInfo[0]?.shippingServiceCost?.[0]?.__value__ || "N/A"),
                 zip: item.postalCode || "N/A",
-                itemId: item.itemId || "N/A",
+                itemId: item.itemId[0] || "N/A",
                 shippingInfo: item.shippingInfo || "N/A",
                 returnsAccepted: item.returnsAccepted || "N/A",
                 sellerInfo: item.sellerInfo || "N/A",

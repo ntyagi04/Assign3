@@ -107,11 +107,16 @@
         </div>
     </form>
 </div>
-
+<div class=" p-3 my-3  text-center">
+<button class="btn btn-light" (click)="buttonC='results'" [class.btn-dark]="buttonC === 'results'" 
+[class.btn-white]="buttonC !== 'results'" ><a >Results</a></button>
+        <button class="btn btn-light" (click)="buttonC='wish'" [class.btn-dark]="buttonC === 'wish'" 
+        [class.btn-white]="buttonC !== 'wish'"><a >Wish List</a></button>
+    </div>
 <div *ngIf="!showProductDetails" class="container bg-white p-3 my-3 text-white">
     <table *ngIf="paginatedItems.length > 0 && !showProductDetails" class=" table table-dark table-striped text-white">
       <thead>
-        <tr class="text-center"> <!-- Adjust text alignment to center -->
+        <tr class="text-center"> 
           <th scope="col">#</th>
           <th scope="col">Image</th>
           <th scope="col">Title</th>
@@ -139,17 +144,14 @@
                 add_shopping_cart
                 </span>
                 </button>
-                <!-- <button class="btn btn-light"   >
-                <span class="material-icons"  style="color:#d39e00">
-                  remove_shopping_cart
-                  </span>     </button> -->
+                
           </td>
          
         </tr>
       </tbody>
     </table>
     
-    <!-- Pagination controls -->
+
     <div *ngIf="totalItems > itemsPerPage" class="d-flex justify-content-center my-3" >
       <nav aria-label="Page navigation" style="border: none;" *ngIf="totalItems > itemsPerPage" class="d-flex justify-content-center my-3">
         <ul class="pagination">
@@ -158,7 +160,7 @@
               <span aria-hidden="true">&laquo; Previous</span>
             </a>
           </li>
-          <!-- Dynamically generate page numbers based on the data -->
+      
           <li class="page-item" *ngFor="let page of pages" [class.active]="currentPage === page">
             <a class="page-link"  (click)="selectPage(page)" >{{ page }}</a>
           </li>
@@ -173,7 +175,6 @@
   </div>
   
   
-
 
   
 <div class="">

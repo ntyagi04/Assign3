@@ -24,7 +24,7 @@ export class Ass3searchFormComponent{
   localPickup: string = '';
   freeShipping: string = '';
   distance: string = '';
-  currentLocation: string = '';
+  currentLocation: string = 'currentLocation';
   other: string = '';
   zipCode: string = '';
   suggestions: string[] = [];
@@ -47,7 +47,7 @@ export class Ass3searchFormComponent{
    totalPages: number =0;
    pages: number[] = [];
    selectedProductitemId: string = '';
-
+buttonC='results';
   currentPage: number = 1;
   itemsPerPage: number = 10;
   allItems: any[] = []; // This will hold all fetched items

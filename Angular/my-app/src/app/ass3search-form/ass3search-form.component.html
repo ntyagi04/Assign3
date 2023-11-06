@@ -1,152 +1,182 @@
+
 <div class="container p-3 my-3 border bg-dark text-white">
-    <h2>Product Search</h2>
-    <br>
+    <div class="row">
+        <div class="col-sm-2"></div> 
+        <div class="col-sm-6">
+            <h2 class="text-center mb-4">Product Search</h2>
+        </div>
+    </div>
     <form>
-        <div class="form-group row">
-            <span class="req col-sm-2 col-form-label">
-            <label for="keyword">Keyword</label>
-            </span>
-            <div class="col-sm-10">
-                <input type="text" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" class="form-control-plaintext" id="keyword" required>
+        <div class="form-group row justify-content-center">
+            
+            <label for="keyword" class="col-sm-2 col-form-label text-right">Keyword<span class="req "></span></label>
+      
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="keyword" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}"  id="keyword" required>
             </div>
         </div>
 
-        <div class="form-group row">
-            <span class="col-sm-2 col-form-label">
-            <label for="category">Category</label>
-            </span>
-            <div class="col-sm-10">
-                <select name="category" [(ngModel)]="category" id="category" value="AllCategory">
+        <div class="form-group row justify-content-center">
+            <label for="category" class="col-sm-2 col-form-label text-right">Category</label>
+            <div class="col-sm-4">
+                <select class="form-control" name="category" [(ngModel)]="category" id="category" value="AllCategory" [ngModelOptions]="{standalone: true}">
                     <option value="AllCategory">All Category</option>
                     <option value="art">Art</option>
                     <option value="baby">Baby</option>
                     <option value="books">Books</option>
-                    <option value="clothingShoesAccessories">Clothing, Shoes &amp Accessories</option>
-                    <option value="computersTabletsNetworking">Computers/Tablets &amp Networking</option>
-                    <option value="healthBeauty">Health &amp Beauty</option>
+                    <option value="clothingShoesAccessories">Clothing, Shoes & Accessories</option>
+                    <option value="computersTabletsNetworking">Computers/Tablets & Networking</option>
+                    <option value="healthBeauty">Health & Beauty</option>
                     <option value="music">Music</option>
-                    <option value="videoGamesConsoles">Video Games &amp Consoles</option>
-
+                    <option value="videoGamesConsoles">Video Games & Consoles</option>
                 </select>
             </div>
         </div>
 
-        <div class="form-group row">
-            <span class="col-sm-2 col-form-label">
-                <label for="condition">Condition:</label>                
-            </span>
-            <div class="col-sm-10">
-                <input type="checkbox" [(ngModel)]="new" id="new" name="new" value="">
-                <label for="from">New </label>
-                <input type="checkbox" [(ngModel)]="used" id="used" name="used" value="">
-                <label for="from">Used </label>
-                <input type="checkbox" [(ngModel)]="unspecified" id="unspecified" name="unspecified" value="">
-                <label for="from">Unspecified </label>
+        <div class="form-group row justify-content-center">
+            <label for="condition" class="col-sm-2 col-form-label text-right">Condition:</label>
+            <div class="col-sm-4">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="new" value="new" [(ngModel)]="new" [ngModelOptions]="{standalone: true}">
+                    <label class="form-check-label" for="new">New</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="used" value="used" [(ngModel)]="used" [ngModelOptions]="{standalone: true}">
+                    <label class="form-check-label" for="used">Used</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="unspecified" value="unspecified" [(ngModel)]="unspecified" [ngModelOptions]="{standalone: true}">
+                    <label class="form-check-label" for="unspecified">Unspecified</label>
+                </div>
             </div>
         </div>
 
-        <div class="form-group row">
-            <span class="col-sm-2 col-form-label">
-                <label for="shippingOptions">Shipping Options:</label>                
-            </span>
-            <div class="col-sm-10">
-                <input type="checkbox" [(ngModel)]="localPickup" id="localPickup" name="localPickup" value="">
-                <label for="from">Local Pickup </label>
-                <input type="checkbox" [(ngModel)]="freeShipping" id="freeShipping" name="freeShipping" value="">
-                <label for="from">Free Shipping </label>
+        <div class="form-group row justify-content-center">
+            <label for="shippingOptions" class="col-sm-2 col-form-label text-right">Shipping Options:</label>
+            <div class="col-sm-4">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="localPickup" [ngModelOptions]="{standalone: true}" id="localPickup" value="localPickup">
+                    <label class="form-check-label" for="localPickup">Local Pickup</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" [(ngModel)]="freeShipping" [ngModelOptions]="{standalone: true}" id="freeShipping" value="freeShipping">
+                    <label class="form-check-label" for="freeShipping">Free Shipping</label>
+                </div>
             </div>
         </div>
 
-        <div class="form-group row">
-            <span class="col-sm-2 col-form-label">
-                <label for="distance">Distance(Miles)</label>                
-            </span>
-            <div class="col-sm-10">
-                <select name="distance" [(ngModel)]="distance" id="distance" value="distance">
-                    <option value="">10</option>
-                </select>
+        <div class="form-group row justify-content-center">
+            <label for="distance" class="col-sm-2 col-form-label text-right">Distance (Miles)</label>
+            <div class="col-sm-4">
+                <input type="number" id="distance" class="form-control bg-white" [(ngModel)]="distance" [ngModelOptions]="{standalone: true}">
             </div>
         </div>
 
-        <div class="form-group row">
-            <span class="req col-sm-2 col-form-label">
-                <label for="from">From</label>                
-            </span>
-            <div class="col-sm-10">
-                <input class="form-check-input" [(ngModel)]="currentLocation" type="radio" name="currentLocation" id="currentLocation" value="currentLocation" (change)="getCurLoc()" checked>
-                <label class="form-check-label" for="currentLocation">'Current Location'</label>
-                <br>
-                <input class="form-check-input" [(ngModel)]="other" type="radio" name="other" id="other" value="other">
-                <label class="zip-label form-check-label" for="other">Other. Please specify zip code:</label>
-                <br>
-                
-                <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control-plaintext" id="zip" value="" (input)="onZipCodeChange()">
-                <div *ngIf="suggestions?.length" class="autocomplete-suggestions">
-                    <div *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+        <div class="form-group row justify-content-center">
+            <label for="from" class="col-sm-2 col-form-label text-right">From<span class="req "></span></label>
+            <div class="col-sm-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="locationOptions" [ngModelOptions]="{standalone: true}" [(ngModel)]="currentLocation" id="currentLocation" value="currentLocation" (change)="getCurLoc()" checked>
+                    <label class="form-check-label" for="currentLocation">Current Location</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" [(ngModel)]="other" type="radio" name="locationOptions" id="other" value="other">
+                    <label class="form-check-label" for="other">Other. Please specify zip code:</label>
+                </div>
+                <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control mt-2" id="zip" value="" (input)="onZipCodeChange()">
+                <div *ngIf="suggestions?.length" class="autocomplete-suggestions ">
+                    <div *ngFor="let suggestion of suggestions" class="text-dark" (click)="selectSuggestion(suggestion)">
                         {{ suggestion }}
                     </div>
                 </div>
-            
-
-            </div>
+                            </div>
         </div>
 
-        <button type = "search" form="searchForm" value="search" (click)="onSearchForm()">Search</button>
-        <button type = "clear" form="clear" value="clear">Clear</button>
 
-
-
-        
+        <div class="form-group row ">
+            <!-- Offset div to align with the form labels -->
+            <div class="col-sm-4"></div> 
+            <div class="col-sm-6 text-left">
+                <button type="submit" class="btn btn-light btn-adjusted text-dark" style="margin-right: 5px;" (click)="onSearchForm()">
+                    <i class="fa fa-search"></i> Search
+                </button>
+                <button type="button" class="btn btn-light text-dark">
+                    <i class="fa fa-bars"></i> Clear
+                </button>
+            </div>
+        </div>
     </form>
-
-    
 </div>
-<div *ngIf="!showProductDetails" class="table-component">
-<table *ngIf="paginatedItems.length > 0" class="table-striped table-dark">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Image</th>
-        <th>Title</th>
-        <th>Price</th>
-        <th>Shipping</th>
-        <th>Zip</th>
-        <th>Wish List</th>
-      </tr>
-    </thead>
-    <tbody>
+<div class=" p-3 my-3  text-center">
+<button class="btn btn-light" (click)="buttonC='results'" [class.btn-dark]="buttonC === 'results'" 
+[class.btn-white]="buttonC !== 'results'" ><a >Results</a></button>
+        <button class="btn btn-light" (click)="buttonC='wish'" [class.btn-dark]="buttonC === 'wish'" 
+        [class.btn-white]="buttonC !== 'wish'"><a >Wish List</a></button>
+    </div>
+<div *ngIf="!showProductDetails" class="container bg-white p-3 my-3 text-white">
+    <table *ngIf="paginatedItems.length > 0 && !showProductDetails" class=" table table-dark table-striped text-white">
+      <thead>
+        <tr class="text-center"> 
+          <th scope="col">#</th>
+          <th scope="col">Image</th>
+          <th scope="col">Title</th>
+          <th scope="col">Price</th>
+          <th scope="col">Shipping</th>
+          <th scope="col">Zip</th>
+          <th scope="col">Wish List</th>
+        </tr>
+      </thead>
+      <tbody>
         <tr *ngFor="let item of paginatedItems; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td><img [src]="item.image" alt="N/A" width="50"></td>
-        <td>
-            <a (click)="onProductClick(item.itemId)">{{ item.title }}</a></td> 
-            <!-- {{ item.title }}</td>  -->
-        <td>{{ item.price || 'N/A' }}</td>
-        <td>
-          {{ item.shipping || 'N/A' }}
-        </td>
-        <td>{{ item.zip|| 'N/A' }}</td>
-        <td><button (click) = "addToWishlist(item)">Add to Wish List</button></td>
-      </tr>
-    </tbody>
-</table>
+          <td class="align-middle text-center">{{ i + 1 }}</td>
+          <td class="align-middle text-center"><a href="{{ item.image }}" target="_blank">
+            <img [src]="item.image" alt="N/A" style="width:50px; height:auto;">
+          </a></td>
+          <td class="align-middle">
+            <a href="" (click)="onProductClick(item.itemId)" class="text-decoration-none">{{ item.title }}</a>
+          </td>
+          <td class="align-middle text-center">{{ item.price || 'N/A' }}</td>
+          <td class="align-middle text-center">
+            {{ item.shipping || 'N/A' }}
+          </td>
+          <td class="align-middle text-center">{{ item.zip || 'N/A' }}</td>
+          <td>
+            <button class="btn btn-light" (click)="addToWishlist(item)">
+              <span class="material-icons"  >
+                add_shopping_cart
+                </span>
+                </button>
+                
+          </td>
+         
+        </tr>
+      </tbody>
+    </table>
+    
 
-  <!-- Pagination controls 
-  <div *ngIf="items.length > 0">
-    <button>Previous</button>
-    <span>1</span> 
-    <button>Next</button>
-  </div>>-->
-  
-  <div *ngIf="totalItems > itemsPerPage" class="pagination-controls">
-    <button (click)="selectPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-    <!-- Dynamically generate page numbers based on the data -->
-    <button *ngFor="let page of pages" (click)="selectPage(page)" [class.active]="currentPage === page">{{ page }}</button>
-    <button (click)="selectPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+    <div *ngIf="totalItems > itemsPerPage" class="d-flex justify-content-center my-3" >
+      <nav aria-label="Page navigation" style="border: none;" *ngIf="totalItems > itemsPerPage" class="d-flex justify-content-center my-3">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="selectPage(currentPage - 1)" aria-label="Previous">
+              <span aria-hidden="true">&laquo; Previous</span>
+            </a>
+          </li>
+      
+          <li class="page-item" *ngFor="let page of pages" [class.active]="currentPage === page">
+            <a class="page-link"  (click)="selectPage(page)" >{{ page }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="selectPage(currentPage + 1)" aria-label="Next">
+              <span aria-hidden="true">Next &raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
-</div>
   
-
+  
 
   
 <div class="">

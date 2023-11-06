@@ -155,11 +155,12 @@ app.get('/api/eBayFormData', async (req, res) => {
     url += `&outputSelector(0)=SellerInfo&outputSelector(1)=StoreInfo`;
     // console.log("URL",url);
     try {
+      console.log(url)
         const ebayResponse = await axios.get(url);
         //res.json(ebayResponse.data);
 
         let items = ebayResponse.data?.findItemsAdvancedResponse?.[0].searchResult?.[0].item || [];
-          console.log("ITEMSSSSSSS: ",items);
+          // console.log("ITEMSSSSSSS: ",items);
         let processedData = items.map((item, index) => {
             // console.log("TEST",item.sellingStatus[0]);
             // console.log("TESTING",item.itemId);
@@ -223,7 +224,7 @@ app.get('/api/singleItemDetail', async (req, res) => {
         });
          res.json(singleItemDetail);
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).json({ error: 'An error occurred while fetching suggestions.' });
     }
 });
@@ -236,7 +237,7 @@ app.get('/api/productImages', async (req, res) => {
         let decodedStr = querystring.unescape(prodTitle);
         let cleanedStr = decodedStr.replace(/[^\w\s]/gi, '');
         let url = `https://www.googleapis.com/customsearch/v1?q=${cleanedStr}&cx=${searchEngineId}&imgSize=huge&num=8&searchType=image&key=${apiKey}`
-        console.log('URLLL',url)
+        // console.log('URLLL',url)
         const productImages = await axios.get(url);
         // console.log('HELLO',relatedItem.data)
          res.json(productImages.data)
@@ -269,7 +270,7 @@ app.get('/api/similarProductsData', async (req, res) => {
                 daysLeft : item.timeLeft ? item.timeLeft : 'N/A'
             };
         });
-        console.log("HEHE",processedData)
+        // console.log("HEHE",processedData)
         res.json(processedData)
         
    

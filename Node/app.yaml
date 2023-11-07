@@ -1,0 +1,17 @@
+runtime: nodejs18
+env: standard
+
+handlers:
+- url: /api/.*
+  script: auto
+  secure: always
+
+- url: /(.*\.(gif|png|jpg|css|js|ico|html|json))$
+  static_files: dist/my-app/\1
+  upload: dist/my-app/(.*\.(gif|png|jpg|css|js|ico|html|json))$
+  secure: always
+
+- url: /.*
+  static_files: dist/my-app/index.html
+  upload: dist/my-app/index.html
+  secure: always

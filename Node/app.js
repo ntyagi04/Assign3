@@ -1,7 +1,7 @@
 const OAuthToken = require('./ebay_oauth_token');
 const http = require('http');
 const hostname = 'localhost';
-const port = 3000;
+const port = process.env.PORT || 3000;
 const cors = require('cors');
 const express = require('express');
 const app = express();
@@ -56,6 +56,7 @@ const client = new MongoClient(uri, {
         const collection = db.collection('Cluster0'); 
         const result = await collection.insertOne(product);
         console.log("Product added to wishlist:", product); 
+        console.log("result",result);
         res.status(201).json(result);
       } catch (error) {
         console.error(error);
@@ -63,7 +64,7 @@ const client = new MongoClient(uri, {
       }
     });
   
-  app.get('/wishlist', async (req, res) => {      //retrieve all endpoint
+  app.get('/api/wishlist', async (req, res) => {      //retrieve all endpoint
     try {
       const collection = db.collection('Cluster0'); 
       const wishlistItems = await collection.find({}).toArray();
@@ -75,7 +76,7 @@ const client = new MongoClient(uri, {
     }
   });
   
-  app.delete('/wishlist/:id', async (req, res) => {       //delete endpoint
+  app.delete('/api/wishlist/:id', async (req, res) => {       //delete endpoint
       try {
         const itemId = req.params.id;
         const collection = db.collection('Cluster0'); 
@@ -270,7 +271,7 @@ app.get('/api/similarProductsData', async (req, res) => {
                 daysLeft : item.timeLeft ? item.timeLeft.split('P')[1].split('D')[0] : 'N/A'
             };
         });
-        // console.log("HEHE",processedData)
+         console.log("HEHE",processedData)
         res.json(processedData)
         
    

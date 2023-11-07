@@ -1,4 +1,4 @@
-import { Component,OnInit } from '@angular/core';
+import { Component,OnInit,ViewChild } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
@@ -6,7 +6,9 @@ import { debounceTime, map } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 import { EbayItem } from './types';
 import { Renderer2, ElementRef } from '@angular/core';
+import { Modal } from 'bootstrap';
 
+declare var $:any
 @Component({
   selector: 'app-ass3search-form',
   templateUrl: './ass3search-form.component.html',
@@ -16,7 +18,9 @@ import { Renderer2, ElementRef } from '@angular/core';
 
 
 export class Ass3searchFormComponent{
-  keyword: string = '';
+  @ViewChild('myModal', { static: false }) private myModal!: ElementRef;
+
+  keyword: string = 'iphone';
   category: string = 'AllCategory';
   new: string = '';
   used: string = '';
@@ -26,11 +30,12 @@ export class Ass3searchFormComponent{
   distance: string = '10';
   currentLocation: string = 'currentLocation';
   other: string = '';
-  zipCode: string = '';
+  zipCode: string = '90007';
   currLoc:string='';
   suggestions: string[] = [];
   items: any[] = [];
   showProductDetails: boolean = false;
+  selectedProd:any=[]
   productData: any;
   showImageModal: boolean = false;
   prodInfo:any[] = [];
@@ -38,6 +43,10 @@ export class Ass3searchFormComponent{
   shippingInfo1:any[] = [];
   sellerInfo:any[] = [];
   prodImages:any[] = [];
+  wishlistItems: any[] = [];
+  wishlist: any[] = [];
+  isBtn:boolean=true;
+  wishlistLoaded: boolean = false; // to track if the wishlist is loaded
 
   similarProds:any[] = [];
   displayCount = 5; 
@@ -48,24 +57,60 @@ export class Ass3searchFormComponent{
    totalPages: number =0;
    pages: number[] = [];
    selectedProductitemId: string = '';
-buttonC='results';
+buttonC:any='results';
   currentPage: number = 1;
   itemsPerPage: number = 10;
   allItems: any[] = []; // This will hold all fetched items
   paginatedItems: any[] = []; 
   activeTab: string = 'product';
-
+  isZipCodeValid : boolean = true;
   //FACEBOOK
   facebookShareMsg: string = ''
   shareURL:string=''
   showZipAlert:boolean = false;
+  isKeyVal:boolean= true;
+
+  sortDirection: string = 'ascending'; 
+sortOrder: string='default';
 
   private ipinfoToken: string = '38d3cd684c4117';
   constructor(private http: HttpClient, private renderer: Renderer2, private el: ElementRef) {
     this.zipCode = '';
    
   }
+
+  KeyVal(){
+    this.isKeyVal = this.keyword.trim() ! == '';
+    this.updateBtm();
+  }
+  // ZipVal(){
+    
+  //   this.ZipVal = /^[0-9]{5}$/.test(this.zipCode);
   
+  //     this.isZipCodeValid = true;
+
+  
+
+  //   this.updateBtm();
+  // }
+  updateBtm(){
+    const isKeywordInvalidOrEmpty = !this.isKeyVal || !this.keyword.trim().length;
+    
+    // const isKeywordInvalidOrEmpty = !this.isKeywordValid || !this.keyword.trim().length;
+    //  const isZipInvalidOrEmpty = (!this.isZipCodeValid || this.zipCode.trim() === '');
+    
+    //  this.isBtn = isKeywordInvalidOrEmpty || isZipInvalidOrEmpty 
+    // this.cd.detectChanges();
+    this.isBtn = isKeywordInvalidOrEmpty 
+  }
+
+  
+  openModal() {  
+    
+    const modal = new Modal(this.myModal?.nativeElement);
+    modal.show();
+    // this.carousal=true;
+  }
   ngOnInit(): void {
     this.getCurLoc()
    }
@@ -80,7 +125,7 @@ buttonC='results';
     }
 
     if (this.zipCode.length > 2) {
-        this.http.get(`http://localhost:3000/api/autocomplete-zip?zipCode=${this.zipCode}`)
+        this.http.get(`/api/autocomplete-zip?zipCode=${this.zipCode}`)
             .subscribe((data: any) => {
                 this.suggestions = data.suggestions;
             });
@@ -115,19 +160,45 @@ buttonC='results';
     this.currentLocation = ''; 
     this.other = '';
     this.zipCode = ''; 
+    this.showProductDetails = true;
+  }
+
+  loadWishlist() {
+    this.getWishlist();
+    this.wishlistLoaded = true; // set to true to show the table
   }
 
 onWishListClick(){
-  this.buttonC='wish'
-  this.showProductDetails=false
+  this.buttonC='wish';
+  this.showProductDetails=false;
+this.getWishlist()
+
+}
+onPageChange(page: number) {
+  this.currentPage = page;
 }
   onSearchForm() {
+    type CategoryKey = keyof typeof categoryMap; 
+
+    const categoryMap = {
+      'Art': '550',
+      'Baby': '2984',
+      'Books':'267',
+      'Clothing, Shoes & Accessories':'11450',
+      'Computers/Tablets & Networking':'58058',
+      'Health & Beauty' : '26395',
+      'Music':'26395',
+      'Video Games & Consoles':'1249'
+      
+  };
+
+  const category: CategoryKey = this.category as CategoryKey; // Ensure that `this.category` is of type CategoryKey
     
 this.showProductDetails=false
     const params = new HttpParams({
       fromObject: {
           keyword: this.keyword || '',
-          category: this.category || '',
+          category: categoryMap[category],
           new: this.new ? 'true' : 'false',
           used: this.used ? 'true' : 'false',
           unspecified: this.unspecified ? 'true' : 'false',
@@ -138,18 +209,15 @@ this.showProductDetails=false
       }
   });
   console.log(params);
-  this.http.get('http://localhost:3000/api/eBayFormData', {params}).subscribe((data: any) => {
+  this.http.get('/api/eBayFormData', {params}).subscribe((data: any) => {
       //this.displayDataInTable(data);
       this.items = data;
       this.onItemsReceived(data);
-
+this.currentPage=1
       console.log(data);
 
       console.log("HELLLOOOO");
-    //   for(i in data) {
-    //     console.log("hi")  
-    //  }
-      //this.shippingInfo = this.processShippingData(data);
+    
   });
   }
 
@@ -201,8 +269,8 @@ processSellerData(items: any[], itemId: string): any[] {
 
 processSimilarProduct(itemId: string): any[] {
 
-  this.http.get(`http://localhost:3000/api/similarProductsData?itemId=${itemId}`).subscribe((data: any) => {
-        console.log("DATA", data);
+  this.http.get(`/api/similarProductsData?itemId=${itemId}`).subscribe((data: any) => {
+        console.log("Similar Product DATA", data);
         this.similarProds = data; 
     }, (error: any) => console.error('Error fetching product details', error));
 
@@ -216,7 +284,7 @@ processProductImages(items: any[],itemId: string): any[] {
       console.log('Item not found');
       return [];
   }
-  this.http.get(`http://localhost:3000/api/productImages?prodTitle=${selectedItem.title[0]}`).subscribe((data: any) => {
+  this.http.get(`/api/productImages?prodTitle=${selectedItem.title[0]}`).subscribe((data: any) => {
         console.log("DATAYOYO", data);
         this.prodImages =data.items;
         console.log("hi-",this.prodImages)
@@ -261,8 +329,22 @@ shareMessage(items: any[],itemId: string) {
   // Update the items for the current page
   updatePaginatedItems() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    
+    const wishlistItemIds = new Set(this.wishlistItems.map(item => item.itemId));
+
+    // Iterate over allItems and update the `addedToWishlist` property
+    this.allItems = this.allItems.map(product => {
+      // Check if the product's itemId is in the wishlistItemIds set
+      const isProductInWishlist = wishlistItemIds.has(product.itemId);
+      return {
+        ...product,
+        addedToWishlist: isProductInWishlist
+      };
+    });
+    
     this.paginatedItems = this.allItems.slice(startIndex, startIndex + this.itemsPerPage);
   }
+    
 
   selectPage(page: number): void {
     if (page < 1 || page > this.totalPages) {
@@ -272,41 +354,53 @@ shareMessage(items: any[],itemId: string) {
     this.updatePaginatedItems(); // Update the paginated items for the new page
   }
 
-  //Single Item details --->>>
-  onProductClick(itemId: string) {
-    console.log("Inside....");
-    this.showProductDetails = true;
-    this.selectedProductitemId = itemId;
-
-    this.http.get(`http://localhost:3000/api/singleItemDetail?itemId=${itemId}`).subscribe((data: any) => {
-        // Process and log the shipping data for the clicked product
-       
-        this.prodInfo = data;
-      console.log("ProductInfro",this.prodInfo)
-        this.processProductImages(this.items, itemId);
-
-        this.shippingInfo1 = this.processShippingData(this.items, itemId);
-        
-        this.sellerInfo = this.processSellerData(this.items, itemId);
-
-        this.similarProds = this.processSimilarProduct(itemId);
-
-        this.facebookShareMsg = this.shareMessage(this.items, itemId);
-
-        this.shareOnFacebook(this.items, itemId);
-        console.log("URL == ",this.shareURL);
-        
-    }, (error: any) => console.error('Error fetching product details', error));
+onListClick(): void {
+  this.showProductDetails = false; // Hide product details
+  this.buttonC = 'results'; // Set to results to show the result table
+  
+  // If you're using pagination and you want to show the first page of results
+  this.currentPage = 1;
+  this.updatePaginatedItems();
 }
-    openModal() {
-      this.showImageModal = true;
-    }
+
+onProductClick(item: any) {
+  console.log("Inside....");
+  this.showProductDetails = true;
+  this.activeTab='product'
+  this.selectedProductitemId = item.itemId;
+this.selectedProd=item
+  this.http.get(`/api/singleItemDetail?itemId=${this.selectedProductitemId}`).subscribe((data: any) => {
+      // Process and log the shipping data for the clicked product
+     
+      this.prodInfo = data;
+    console.log("ProductInfro",this.prodInfo)
+      this.processProductImages(this.items, this.selectedProductitemId);
+
+      this.shippingInfo1 = this.processShippingData(this.items, this.selectedProductitemId);
+      
+      this.sellerInfo = this.processSellerData(this.items, this.selectedProductitemId);
+
+      this.similarProds = this.processSimilarProduct(this.selectedProductitemId);
+      console.log("SIMILARPROD---",this.similarProds)
+      this.facebookShareMsg = this.shareMessage(this.items, this.selectedProductitemId);
+
+      this.shareOnFacebook(this.items, this.selectedProductitemId);
+      console.log("URL == ",this.shareURL);
+      
+  }, (error: any) => console.error('Error fetching product details', error));
+}
+
+    
 
     selectTab(tab: string): void {
       this.activeTab = tab;
       // Depending on the tab selected, you might want to call different methods
       // For instance, if you click the 'seller' tab, you might want to load the seller information
       if (tab === 'seller') {
+        //this.loadSellerData(); // You'll need to implement this method
+      }
+      if (tab === 'photos') {
+        this.showImageModal=true
         //this.loadSellerData(); // You'll need to implement this method
       }
       // Implement similar conditions and methods for other tabs if needed
@@ -330,11 +424,13 @@ shareMessage(items: any[],itemId: string) {
     }
 
     addToWishlist(product: any) {
-  const wishlistEndpoint = 'http://localhost:3000/api/wishlist'; // Your Node.js server endpoint
+  const wishlistEndpoint = '/api/wishlist'; // Your Node.js server endpoint
 
   this.http.post(wishlistEndpoint, product).subscribe(
 	(response: any) => {
-  	console.log('Product added to wishlist:', response);
+    console.log('Product added to wishlist:', response);
+    //product.inWishlist = true;
+    product.addedToWishlist = true;
   	// Implement any feedback logic, like showing a success message to the user
 	},
 	(error:any) => {
@@ -346,20 +442,81 @@ shareMessage(items: any[],itemId: string) {
 
 removeFromWishlist(item: any) {
   console.log(item);
-  const wishlistEndpoint = `http://localhost:3000/wishlist/${item.itemId}`; // The Node.js server endpoint for deletion
+  const wishlistEndpoint = `/api/wishlist/${item.itemId}`; // The Node.js server endpoint for deletion
 
   this.http.delete(wishlistEndpoint).subscribe(
 	() => {
   	console.log('Product removed from wishlist');
-  	// Reset the flag to indicate the product is removed from wishlist
-  	item.addedToWishlist = false;
+    // Reset the flag to indicate the product is removed from wishlist
+    // if(item.has('add'))
+    item.addedToWishlist = false;
+    this.getWishlist()
+    //item.inWishlist = false;
 	},
 	(error:any) => {
   	console.error('Error removing product from wishlist:', error);
 	}
   );
+ 
 }
 
+getWishlist() {
+  const wishlistEndpoint = '/api/wishlist'; // Your Node.js server endpoint
+
+  this.http.get(wishlistEndpoint).subscribe(
+	(items: any) => {
+  	this.wishlistItems = this.filterUniqueItems(items);
+  	console.log('Unique Wishlist items:', this.wishlistItems);
+	},
+	(error:any) => {
+  	console.error('Error retrieving wishlist items:', error);
+	}
+  );
+}
+
+filterUniqueItems(items: any[]): any[] {
+  const uniqueItems = [];
+  const itemIds = new Set();
+
+  for (const item of items) {
+    console.log(item)
+	const itemId = item.itemId; // Assuming itemId is an array with a single string value
+	if (!itemIds.has(itemId)) {
+  	itemIds.add(itemId);
+  	uniqueItems.push(item);
+	}
+  }
+
+  return uniqueItems;
+}
+
+sortProducts() {
+  const isAscending = this.sortDirection === 'ascending';
+
+  if (this.sortOrder === 'product_name') {
+    this.similarProds.sort((a: { prodName: string }, b: { prodName: string }) => {
+      return isAscending ? a.prodName.localeCompare(b.prodName) : b.prodName.localeCompare(a.prodName);
+    });
+  } else if (this.sortOrder === 'days_left') {
+    this.similarProds.sort((a:{daysLeft: string}, b: {daysLeft: string}) => {
+      const daysLeftA = parseInt(a.daysLeft);
+      const daysLeftB = parseInt(b.daysLeft);
+      return isAscending ? daysLeftA - daysLeftB : daysLeftB - daysLeftA;
+    });
+  } else if (this.sortOrder === 'price') {
+    this.similarProds.sort((a: { price: string  }, b: { price: string } ) => {
+      const priceA = parseFloat(a.price);
+      const priceB = parseFloat(b.price);
+      return isAscending ? priceA - priceB : priceB - priceA;
+    });
+  } else if (this.sortOrder === 'shipping_cost') {
+    this.similarProds.sort((a: { shippingCost:  string }, b: { shippingCost:  string }) => {
+      const shippingCostA = parseFloat(a.shippingCost);
+      const shippingCostB = parseFloat(b.shippingCost);
+      return isAscending ? shippingCostA - shippingCostB : shippingCostB - shippingCostA;
+    });
+  }
+}
 
     
 }

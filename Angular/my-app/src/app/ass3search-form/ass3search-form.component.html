@@ -1,4 +1,3 @@
-
 <div class="container p-3 my-3 border bg-dark text-white">
     <div class="row">
         <div class="col-sm-2"></div> 
@@ -7,20 +6,8 @@
         </div>
     </div>
     <form>
+
         <!-- <div class="form-group row justify-content-center">
-            
-            <label for="keyword" class="col-sm-2 col-form-label text-right">Keyword<span class="req "></span></label>
-      
-            <div class="col-sm-4">
-                <input type="text" class="form-control" id="keyword" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" required>
-                <span class="req">*</span> 
-              <div *ngIf="!keyword" class="invalid-feedback"> Please enter a keyword.
-                  <div *ngIf="!keyword" class="alert-message">Please enter a keyword.</div>
-
-                </div> 
-        </div> -->
-
-        <div class="form-group row justify-content-center">
           <label for="keyword" class="col-sm-2 col-form-label text-right">Keyword<span class="req"></span></label>
           <div class=
           "col-sm-4">
@@ -29,7 +16,17 @@
                   Please enter a keyword.
               </div>
           </div>
-      </div>
+      </div> -->
+
+      <div class="form-group row justify-content-center">
+        <label for="keyword" class="col-sm-2 col-form-label text-white">Keyword<span id="req">*</span></label>
+        <div class="col-sm-4">
+            <input type="text" (input)="KeyVal()"  [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" id="keyword" class="form-control bg-white" required placeholder="Enter Product Name (e.g. iPhone 8)" [class.error-input]="!isKeyVal">
+            <small class="text-danger" *ngIf="!isKeyVal">Invalid keyword. Only letters and spaces are allowed.</small>
+        </div>
+    </div>
+
+
         <div class="form-group row justify-content-center">
             <label for="category" class="col-sm-2 col-form-label text-right">Category</label>
             <div class="col-sm-4">
@@ -98,7 +95,7 @@
                     <label class="form-check-label" for="other">Other. Please specify zip code:</label>
                 </div>
                 <!-- <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control mt-2" id="zip" value="" (input)="onZipCodeChange()"> -->
-                <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control mt-2" id="zip" value="" (input)="onZipCodeChange()">
+                <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control mt-2" id="zip" value="" (input)="onZipCodeChange()" >
                 <div *ngIf="showZipAlert" class="alert-message">Please enter a zip code.</div>
 
                 <div *ngIf="suggestions?.length" class="autocomplete-suggestions ">
@@ -106,15 +103,44 @@
                         {{ suggestion }}
                     </div>
                 </div>
-                            </div>
+              </div>
         </div>
+<!-- 
+        <input type="text" id="zipCode"class="form-control" 
+                                 [(ngModel)]="zipCode" 
+                                 [ngModelOptions]="{standalone: true}" 
+                                 [matAutocomplete]="auto"
+
+                                 (ngModelChange)="onLocationChange()" 
+                                 [disabled]="!useOtherLocation" 
+                                 [class.is-invalid]="useOtherLocation && (!isZipCodeValid || zipCode.trim() === '')"
+                                 >
+                                 <mat-autocomplete #auto="matAutocomplete">
+                                    <ng-container *ngIf="autoCompleteResults.length > 0">
+                                        <mat-option *ngFor="let result of autoCompleteResults" [value]="result.postalCode">
+                                            {{ result.postalCode }}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-autocomplete>
+                        </div>
+                        
+                      </div>
+                      
+    <!-- </div> 
+    
+    
+    
+    
+    <small class="text-danger" *ngIf="useOtherLocation && !isZipCodeValid">Invalid ZIP Code. It should be a 5-digit number.</small>
+</div>
+                </div> -->
 
 
         <div class="form-group row ">
             <!-- Offset div to align with the form labels -->
             <div class="col-sm-4"></div> 
             <div class="col-sm-6 text-left">
-                <button type="submit" class="btn btn-light btn-adjusted text-dark" style="margin-right: 5px;" (click)="onSearchForm()">
+                <button type="submit" class="btn btn-light btn-adjusted text-dark" style="margin-right: 5px;" (click)="onSearchForm()" [disabled] = "updateBtm">
                     <i class="fa fa-search"></i> Search
                 </button>
                 <button type="button" class="btn btn-light text-dark" (click)="clearForm()">
@@ -125,12 +151,19 @@
     </form>
 </div>
 <div class=" p-3 my-3  text-center">
-<button class="btn btn-light" (click)="buttonC='results'" [class.btn-dark]="buttonC === 'results'" 
+<button class="btn btn-light" (click)="buttonC='results';onSearchForm()" [class.btn-dark]="buttonC === 'results'" 
 [class.btn-white]="buttonC !== 'results'" ><a >Results</a></button>
         <button class="btn btn-light" (click)="onWishListClick()" [class.btn-dark]="buttonC === 'wish'" 
-        [class.btn-white]="buttonC !== 'wish'"><a >Wish List</a></button>
+        [class.btn-white]="buttonC !== 'wish'"><a>Wish List</a></button>
     </div>
-<div *ngIf="!showProductDetails" class="container bg-white p-3 my-3 text-white">
+
+    <div *ngIf="!showProductDetails && paginatedItems.length > 0">
+      <button class="text-dark" (click)="onProductClick(selectedProd)">Details<span class="material-icons">navigate_next</span>
+      </button>
+    </div>
+
+  <!-- Search Results -->
+<div *ngIf="!showProductDetails && buttonC=='results'" class="container bg-white p-3 my-3 text-white">
     <table *ngIf="paginatedItems.length > 0 && !showProductDetails" class=" table table-dark table-striped text-white">
       <thead>
         <tr class="text-center"> 
@@ -149,30 +182,36 @@
           <td class="align-middle text-center"><a href="{{ item.image }}" target="_blank" >
             <img [src]="item.image" alt="N/A" style="width:50px; height:auto;">
           </a></td>
-          <td class="align-middle" (click)="onProductClick(item.itemId)" >
+          <!-- <td class="align-middle" (click)="onProductClick(item.itemId)" > -->
+            <td class="align-middle" (click)="onProductClick(item)" >
             <!-- <a href="" class="text-decoration-none">{{ item.title }}</a> -->
-            <a (click)="onProductClick(item.itemId)" matTooltip="{{item.title}}" class="styleTitle">{{ item.title }}</a>
+            <a (click)="onProductClick(item)" matTooltip="{{item.title}}" class="styleTitle">{{ item.title }}</a>
           </td>
           <td class="align-middle text-center">{{ item.price || 'N/A' }}</td>
           <td class="align-middle text-center">
             {{ item.shipping || 'N/A' }}
           </td>
           <td class="align-middle text-center">{{ item.zip || 'N/A' }}</td>
-          <td>
-            <button class="btn btn-light" (click)="addToWishlist(item)">
-              <span class="material-icons"  >
-                add_shopping_cart
-                </span>
-                </button>
-                
+
+            <td>
+              <button *ngIf="!item.addedToWishlist" class="btn btn-light" (click)="addToWishlist(item)">
+                  <span class="material-icons">
+                      add_shopping_cart
+                  </span>
+              </button>
+              <button *ngIf="item.addedToWishlist" class="btn btn-light" (click)="removeFromWishlist(item)">
+                  <span class="material-icons" style="color:#d39e00">
+                      remove_shopping_cart
+                  </span>
+              </button>
           </td>
+
          
         </tr>
       </tbody>
     </table>
-    
 
-    <div *ngIf="totalItems > itemsPerPage" class="d-flex justify-content-center my-3" >
+    <div *ngIf="totalItems > itemsPerPage && buttonC!=='wish'" class="d-flex justify-content-center my-3" >
       <nav aria-label="Page navigation" style="border: none;" *ngIf="totalItems > itemsPerPage" class="d-flex justify-content-center my-3">
         <ul class="pagination">
           <li class="page-item" [class.disabled]="currentPage === 1">
@@ -192,18 +231,103 @@
         </ul>
       </nav>
     </div>
-  </div>
-  
   
 
+</div>
+    
+ <!-- WishList Items    -->
+    <div class="container bg-white p-3 my-3 text-white" *ngIf="!showProductDetails && buttonC=='wish' && wishlistItems.length>0">
+      <h2>test</h2>
+      <table class="wishlist-table" class="table ">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Shipping Option</th>
+            <th>Favorite</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of wishlistItems; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td><img [src]="product.image" alt="product" class="product-image"></td>
+            <!-- <td>{{ product.title }}</td> -->
+            <td class="align-middle" (click)="onProductClick(product)" >
+              <!-- <a href="" class="text-decoration-none">{{ item.title }}</a> -->
+              <a (click)="onProductClick(product)" matTooltip="{{product.title}}" class="styleTitle">{{ product.title }}</a>
+            </td>
+            <td>{{ product.price | currency }}</td>
+            <td>{{ product.shipping }}</td>
+            <td>
+            
+            <button  class="btn btn-light" (click)="removeFromWishlist(product)">
+                <span class="material-icons" style="color:#d39e00">
+                    remove_shopping_cart
+                </span>
+            </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+
+    <!-- <div *ngIf="totalItems > itemsPerPage && buttonC!=='wish'" class="d-flex justify-content-center my-3" >
+      <nav aria-label="Page navigation" style="border: none;" *ngIf="totalItems > itemsPerPage" class="d-flex justify-content-center my-3">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" (click)="selectPage(currentPage - 1)" aria-label="Previous">
+              <span aria-hidden="true">&laquo; Previous</span>
+            </a>
+          </li>
+      
+          <li class="page-item" *ngFor="let page of pages" [class.active]="currentPage === page">
+            <a class="page-link"  (click)="selectPage(page)" >{{ page }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" (click)="selectPage(currentPage + 1)" aria-label="Next">
+              <span aria-hidden="true">Next &raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+   -->
+<!-- 
+   <div class="container">-->
+  <div *ngIf="showProductDetails">
+
+    <div>
+      <div class="container"> <div class="row"> 
+        <div class="col text-left">
+
+      <button class = "btn btn-primary" (click)="onListClick()" class="text-dark"><span class="material-icons">arrow_back_ios_new</span>List</button>
+    </div>
+    <div class="col text-right">
+        <button class="btn facebook_button">
+          <a [href] ="shareURL" target = "_blank">
+            <img src = "./assets/facebook.png" >
+        </a>
+          <!-- <img src="../../assets/facebook.png" alt="Facebook" style="width: 28px; height: 28px;"> -->
+        </button>
+        <button class="btn btn-primary btn-light shopping_cart_icon" style="padding: 0;" (click)="addToWishlist(selectedProd)" *ngIf="!selectedProd?.addedToWishlist">
+          <span class="material-icons" style="color:black;">
+            add_shopping_cart
+          </span>
+        </button>
+        <button class="btn btn-primary btn-light shopping_cart_icon" style="padding: 0;" (click)="removeFromWishlist(selectedProd)" *ngIf="selectedProd?.addedToWishlist">
+          <span class="material-icons" style="color:#ffcd44;">
+            remove_shopping_cart
+          </span>
+        </button>
+      </div>
+      </div>
+    
   
-<div class="p-3 my-3  text-center" *ngIf="showProductDetails">
-  <div class="facebookIcon">
-    <a [href] ="shareURL" target = "_blank">
-        <img src = "./assets/facebook.png" >
-    </a>
-  </div>
     <!-- Tab links -->
+    <div *ngIf="showProductDetails">
     <ul class="nav nav-tabs">
       <li class="nav-item nav-pills" (click)="selectTab('product')">
         <a class="nav-link" [class.active]="activeTab === 'product'">Product</a>
@@ -221,7 +345,7 @@
         <a class="nav-link" [class.active]="activeTab === 'similar'">Similar Products</a>
       </li>
     </ul>
-  
+  </div>
     <!-- Tab content -->
     <div class="tab-content">
       <!-- Product Details -->
@@ -231,6 +355,7 @@
                 <!-- <div *ngIf="prodInfo.length > 0" class="table-striped table-dark"> -->
                 <tr id="productImagesRow">
                     <td>Product Images</td>
+                    <td><a href="#" class="link-primary" (click)="openModal()">View Product Images here</a></td>
                 </tr>
                 <tr id="priceRow">
                     <td>Price</td>
@@ -258,32 +383,131 @@
             </tbody>
           </table>
       </div>
-  
+          
+    
+<!-- Carousel -->
+<div  #myModal class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Product Images</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+      </div>
+      <div class="modal-body">
+       
+        <div id="carouselProductImages" class="carousel slide" [attr.data-interval]="false">
+          <div class="carousel-inner">
+            <div *ngFor="let img of prodInfo[0]?.productImages; let i = index" class="carousel-item" [class.active]="i === 0">
+            <a href="{{img}}" target="_blank">
+         <img [src]="img" class="d-block w-90 card-img-top" [alt]="'Product Image ' + (i + 1)">
+            </a>
+       </div>
+       
+          </div>
+         
+          <a class="carousel-control-prev" href="#carouselProductImages" role="button" data-bs-slide="prev">
+            <i class="carousel-control-prev-icon"></i>
+            <span class="sr-only">Previous</span>
+          </a>
+          
+         
+          <a class="carousel-control-next" href="#carouselProductImages" role="button" data-bs-slide="next">
+            <i class=" carousel-control-next-icon"></i>
+            <span class="sr-only">Next</span>
+          </a>
+          
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
       <!-- Photos -->
-      <div *ngIf="activeTab === 'photos'">
+      <!-- <div *ngIf="activeTab === 'photos'" class="tab-content">  -->
        <!-- <DISPLAY HERE> -->
-        <div *ngIf="showImageModal" class="carousel-container">
-            <!-- Carousel Wrapper -->
-            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-              <!-- Carousel Inner -->
-              <div class="carousel-inner">
-                <!-- Use *ngFor to iterate over the images and display them -->
-                <div *ngFor="let img of prodImages; let i = index" [class]="i === 0 ? 'carousel-item active' : 'carousel-item'">
-                  <img [src]="img.link" class="d-block w-100" alt="...">
-                </div>
+       <!-- <div *ngIf="showImageModal" class="carousel-container"> -->
+        <!-- <div class="tab-pane fade show active" id="photos" role="tabpanel" *ngIf="showImageModal && activeTab=='photos'">
+          <div class="image-grid">
+              <div *ngFor="let imageUrl of prodImages" class="image-cell">
+                  <img [src]="imageUrl.link" alt="Product Image">
               </div>
-              <!-- Carousel Controls -->
-              <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-              </a>
+          </div>
+      </div> -->
+
+      <div  *ngIf="activeTab === 'photos'" class="tab-content">  
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <div *ngFor="let imageUrl of prodImages" class="col">
+            <div class="card">
+              <a href="{{ imageUrl.link }}" target="_blank">
+              <img [src]="imageUrl.link" class="card-img-top img-fluid" alt="photo" _Target="blank"> 
+            </a>
             </div>
           </div>
         </div>
+        </div>
+
+
+      <!-- <div *ngFor="let photo of photos?.items" class="col">
+        <div class="card">
+
+      <div *ngIf="activeTab === 'photos'" class="tab-content" >  
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <div *ngIf="showImageModal" class="carousel-container">
+            <div class="image-grid">
+              <a href="{{ photo.link }}" target="_blank">
+              <img [src]="photo.link" class="card-img-top" alt="photo" _Target="blank">
+            </a>
+            </div>
+          </div>
+        </div>
+        </div> -->
+        
+    
+
+<!-- Carousel -->
+    <div id="carouselModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Product Images</h5>
+                    <button type="button" class="btn close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="carousel-container" style="position: relative; padding: 15px; border: 10px solid black;">
+                        <div id="carouselImages" class="carousel slide" [attr.data-interval]="false">
+                            <div class="carousel-inner">
+                                <div *ngFor="let image of selectedProd[0]?.productImages; let i = index" class="carousel-item" [class.active]="i == 0">
+                                    <img [src]="image" class="d-block w-100 product-image" [alt]="'Product Image ' + (i + 1)">
+                                </div>
+                            </div>                         
+                            <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+                                <i class="fas fa-chevron-left"></i>
+                                <span class="sr-only">Previous</span>
+                            </a>                  
+                            <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+                                <i class="fas fa-chevron-right"></i>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+                
+    
+    
 
   
       <!-- Shipping Information -->
@@ -303,12 +527,30 @@
                     <td id="HandlingTimeVal">{{ shippingInfo1[0].handlingTime }}</td>
                 </tr>
                 <tr id="ExpeditedRow">
-                    <td>Expedited Shipping</td>
-                    <td id="ExpeditedRowVal">{{shippingInfo1[0].returnPolicy}}</td>
-                </tr>   
+                  <td>Expedited Shipping</td>
+                  <td id="ExpeditedRowVal">
+                      <span class="material-symbols-outlined" [class.shipdone]="shippingInfo1[0].returnPolicy" [class.shipclose]="!shippingInfo1[0].returnPolicy" >
+                          {{shippingInfo1[0].returnPolicy ? 'check' : 'close'}}
+                      </span>
+                  </td>
+              </tr>  
                 <tr id="OneDayShippingRow">
                     <td>One Day Shipping</td>
-                    <td id="OneDayShippingVal">{{ shippingInfo1[0].oneDay}}</td>
+                    <td id="OneDayShippingVal">
+                      <span class="material-symbols-outlined"
+                      [class.shipdone]="shippingInfo1[0].oneDay"
+                      [class.shipclose]="!shippingInfo1[0].oneDay">
+                  {{ shippingInfo1[0].oneDay ? 'check' : 'close' }}
+                </span>
+                
+                      <!-- <span class="material-symbols-outlined">
+                        check
+                        </span>
+                        <span class="material-symbols-outlined">
+                        close
+                        </span> -->
+                    </td>
+                    <!-- <td id="OneDayShippingVal">{{ shippingInfo1[0].oneDay}}</td> -->
                 </tr>                       
                 <tr id="ReturnsAcceptedRow">
                     <td>Returns Accepted</td>
@@ -351,48 +593,73 @@
         </table>
       </div>
 
-      <!-- <div *ngFor="let product of similarProducts?.slice(0, initialItemsToShow); let i = index" class="p-3 mb-3 rounded product-card bg-dark text-white">
-        <div class="d-flex justify-content-start align-items-center">
-            <div class="flex-shrink-0">
-                <img [src]="product?.imageURL" alt="Product Image" class="product-image img-fluid mr-3" style="max-width: 100px;">
-            </div>
-        <div class="flex-grow-1" style="text-align: left">
-            <p><a href="{{ product?.viewItemURL }}" class="mb-1 d-block font-weight-bold" style="color: #5ea4bf;">{{ product?.title }}</a></p>
-            <p class="mb-1" style="color: green;">Price: ${{ product?.buyItNowPrice._value_ }}</p>
-            <p class="mb-1" style="color: #DAA520;">Shipping Cost: ${{ product?.shippingCost._value_ }}</p>
-            <p class="mb-0">Days Left: {{ product?.timeLeft.split('P')[1].split('D')[0] }}</p>
-        </div>
-    </div>
-</div> -->
+
       <!-- Similar Products -->
       <div *ngIf="activeTab === 'similar'">
-        <!-- Container for the product cards -->
-        <!-- <div class="product-container"> -->
-          <!-- <div class="product-container"> -->
-            <div *ngFor="let product of similarProds.slice(0, displayCount); let i = index" class="product-card p-3 mb-3 rounded product-card bg-dark text-white">
+            <div class="container">
+              <div class="row">
+                <div class="col d-flex justify-content-start mb-3">
+                  <div class="mr-2">
+                    <select class="form-control" [(ngModel)]="sortOrder" (change)="sortProducts()">  
+                      <option value="default" selected>Default</option>
+                      <option value="product_name">Product Name</option>
+                      <option value="days_left">Days Left</option>
+                      <option value="price">Price</option>
+                      <option value="shipping_cost">Shipping Cost</option>
+                    </select>
+                  </div>
+                  <div>
+                      <select class="form-control" [(ngModel)]="sortDirection" (change)="sortProducts()"> 
+                          <option value="ascending" selected>Ascending</option>
+                          <option value="descending">Descending</option>
+                      </select>
+                        
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div *ngFor="let product of similarProds.slice(0, displayCount); let i = index" class="product-card p-3 mb-3 rounded product-card bg-dark text-white">
               <div class="d-flex justify-content-start align-items-center">  
                 <div class="flex-shrink-0">
                 <img [src]="product.imageURL" alt="{{product.prodName}}" class="product-image img-fluid mr-3" style="max-width: 100px;">
                 <div class="product-details mb-1 d-block font-weight-bold" style="color: #5ea4bf">
                   <p><a href="{{ product?.viewItemURL }}" class="mb-1 d-block font-weight-bold" style="color: #5ea4bf;">{{product?.prodName}}</a></p> 
-                    <p class="mb-1" style="color: green;">Shipping Cost: {{product.shippingCost}}</p>
+                  <p class="mb-1" style="color: green;">Price: ${{ product.price}}</p>
+                    <p class="mb-1" style="color: yellow;">Shipping Cost: {{product.shippingCost}}</p>
                     <p class="mb-0">Days Left: {{product.daysLeft}}</p>
                 </div>
                 <br>
                 </div>
                 </div>
-            </div>
+            </div> -->
         <!-- </div> -->
-
+        <div *ngFor="let product of similarProds.slice(0, displayCount); let i = index" class="product-card p-3 mb-3 rounded bg-dark text-white">
+          <div class="d-flex justify-content-between align-items-center">
+            <!-- Image Container on the left -->
+            <div class="flex-shrink-0">
+              <img [src]="product.imageURL" alt="{{ product.prodName }}" class="product-image img-fluid" style="max-width: 100px;">
+            </div>
+            <!-- Details Container on the right -->
+            <div class="product-details">
+              <a href="{{ product?.viewItemURL }}" class="font-weight-bold" style="color: #5ea4bf;">
+                <p class="mb-1 d-block">{{ product?.prodName }}</p>
+              </a> 
+              <p class="mb-1" style="color: green;">Price: ${{ product.price }}</p>
+              <p class="mb-1" style="color: yellow;">Shipping Cost: {{ product.shippingCost }}</p>
+              <p class="mb-0">Days Left: {{ product.daysLeft }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="button-container">
         <!-- Show more button -->
-        <button *ngIf="displayCount < similarProds.length && !showAll" (click)="showMore()">Show More</button>
-        <button *ngIf="showAll" (click)="showLess()">Show Less</button>
+        <button *ngIf="displayCount < similarProds.length && !showAll" (click)="showMore()" class="centered-button">Show More</button>
+        <button *ngIf="showAll" (click)="showLess()" class="centered-button">Show Less</button>
+        </div>
 
       </div>
-     
-    </div>
-    
+    </div> 
+   
 
   </div>
-
-  
+</div>

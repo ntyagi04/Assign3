@@ -6,14 +6,7 @@
   text-decoration: 'underline';
   cursor: pointer;
 }
-.container{
-    background-color:black;
-    padding-right: 0px;
-    padding-left: 266px;
-    margin-right: auto;
-    margin-left: auto;
-    margin-top: 20px;
-}
+
 .zip-label{
     width:90%;
 }
@@ -65,9 +58,7 @@ button{
     max-width: 100%; /* This ensures images are responsive and do not overflow */
     height: auto; /* Maintain aspect ratio */
 }
-.product-card:hover {
-    transform: scale(1.05);
-}
+
 
 
 
@@ -159,7 +150,7 @@ button{
     margin-top: 10px;
   }
   
-  CSS
+
 
 .product-card {
   border: 1px solid #ddd;
@@ -177,3 +168,108 @@ button{
   padding: 20px;
   flex-grow: 1;
 }
+
+.modal-dialog {
+  margin: 30px auto;
+  max-width: 600px; 
+}
+
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 5px;
+  border: none; 
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+
+.modal-header {
+  padding: 10px 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+
+.carousel-container {
+  padding: 15px;
+  border: 1px solid #e5e5e5; 
+  background-color: #f8f9fa; 
+} 
+
+.carousel-inner .carousel-item .product-image {
+  width: 100%;
+  height: auto; 
+  object-fit: contain; 
+}
+
+
+.modal-footer {
+  padding: 10px 20px;
+  border-top: 1px solid #e5e5e5;
+}
+
+
+
+.carousel-control-prev, .carousel-control-next {
+  color: #000; 
+  text-shadow: none;
+}
+
+/* Assuming a container width, adjust as necessary */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Creates 3 columns */
+  grid-gap: 10px; /* Adjust the gap as needed */
+}
+
+.image-cell {
+  /* Optional: Set a specific height or keep it auto for images to maintain their aspect ratio */
+  height: auto;
+}
+
+.image-cell img {
+  width: 100%; /* Makes image fill the container */
+  height: auto; /* Keep aspect ratio of the image */
+  display: block; /* Removes bottom space under the image */
+}
+.card-img-top{
+  border: black solid 2px;
+}
+.check{
+  color:green;
+}
+.close{
+  color:red;
+}
+.contanerProd{
+  padding-right: 0px;
+  padding-left: 266px;
+  margin-right: 50%;
+  margin-left: 50%;
+  margin-top: 20px;
+}
+.button-container {
+  display: flex;
+  justify-content: center; /* Horizontally centers the child element(s) */
+  align-items: center; /* Vertically centers the child element(s) if the container has a specific height */
+}
+.shipclose {
+  color:red
+}
+.shipdone {
+  color:green
+}
+.centered-button {
+  background-color: black; /* Set the background color to black */
+  color: white; /* Set the font color to white */
+  border: none; /* Optional: removes the default border of the button */
+  padding: 7px 15px; /* Optional: adds some padding inside the button */
+  text-align: center; /* Ensures the text is centered inside the button */
+  text-decoration: none; /* Removes any underline from text */
+  display: inline-block; /* Allows block level properties */
+  font-size: 16px; /* Optional: sets the font size */
+  margin: 4px 2px; /* Optional: adds margin around the button */
+  cursor: pointer; /* Changes the mouse cursor to a pointer on hover */
+  border-radius: 4px; /* Optional: rounds the corners of the button */
+  transition: background-color 0.3s; 
+}
+

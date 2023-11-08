@@ -72,7 +72,7 @@ buttonC:any='results';
 
   sortDirection: string = 'ascending'; 
 sortOrder: string='default';
-
+isloading:Boolean = false;
   private ipinfoToken: string = '38d3cd684c4117';
   constructor(private http: HttpClient, private renderer: Renderer2, private el: ElementRef) {
     this.zipCode = '';
@@ -208,6 +208,8 @@ this.showProductDetails=false
           zipCode: this.other ? this.zipCode : this.currLoc || ''
       }
   });
+  this.isloading = true;
+
   console.log(params);
   this.http.get('/api/eBayFormData', {params}).subscribe((data: any) => {
       //this.displayDataInTable(data);
@@ -217,6 +219,8 @@ this.currentPage=1
       console.log(data);
 
       console.log("HELLLOOOO");
+      this.isloading = false;
+
     
   });
   }
@@ -268,16 +272,19 @@ processSellerData(items: any[], itemId: string): any[] {
 }
 
 processSimilarProduct(itemId: string): any[] {
+  this.isloading = true;
 
   this.http.get(`/api/similarProductsData?itemId=${itemId}`).subscribe((data: any) => {
         console.log("Similar Product DATA", data);
         this.similarProds = data; 
+        this.isloading = false;
     }, (error: any) => console.error('Error fetching product details', error));
 
   return []
   
 }
 processProductImages(items: any[],itemId: string): any[] {
+  this.isloading = true;
 
   const selectedItem = items.find(item => item.itemId[0] === itemId[0]);
   if (!selectedItem) {
@@ -288,6 +295,7 @@ processProductImages(items: any[],itemId: string): any[] {
         console.log("DATAYOYO", data);
         this.prodImages =data.items;
         console.log("hi-",this.prodImages)
+        this.isloading = false;
     }, (error: any) => console.error('Error fetching product details', error));
 
   return []
@@ -364,6 +372,7 @@ onListClick(): void {
 }
 
 onProductClick(item: any) {
+  this.isloading = true;
   console.log("Inside....");
   this.showProductDetails = true;
   this.activeTab='product'
@@ -373,6 +382,7 @@ this.selectedProd=item
       // Process and log the shipping data for the clicked product
      
       this.prodInfo = data;
+      this.isloading = false;
     console.log("ProductInfro",this.prodInfo)
       this.processProductImages(this.items, this.selectedProductitemId);
 
@@ -424,10 +434,12 @@ this.selectedProd=item
     }
 
     addToWishlist(product: any) {
+      this.isloading = true;
   const wishlistEndpoint = '/api/wishlist'; // Your Node.js server endpoint
 
   this.http.post(wishlistEndpoint, product).subscribe(
 	(response: any) => {
+    this.isloading = false;
     console.log('Product added to wishlist:', response);
     //product.inWishlist = true;
     product.addedToWishlist = true;
@@ -441,11 +453,13 @@ this.selectedProd=item
 }
 
 removeFromWishlist(item: any) {
+  this.isloading = true;
   console.log(item);
   const wishlistEndpoint = `/api/wishlist/${item.itemId}`; // The Node.js server endpoint for deletion
 
   this.http.delete(wishlistEndpoint).subscribe(
 	() => {
+    this.isloading = false;
   	console.log('Product removed from wishlist');
     // Reset the flag to indicate the product is removed from wishlist
     // if(item.has('add'))
@@ -461,10 +475,12 @@ removeFromWishlist(item: any) {
 }
 
 getWishlist() {
+  this.isloading = true;
   const wishlistEndpoint = '/api/wishlist'; // Your Node.js server endpoint
 
   this.http.get(wishlistEndpoint).subscribe(
 	(items: any) => {
+    this.isloading = false;
   	this.wishlistItems = this.filterUniqueItems(items);
   	console.log('Unique Wishlist items:', this.wishlistItems);
 	},

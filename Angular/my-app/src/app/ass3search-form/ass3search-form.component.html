@@ -21,7 +21,7 @@
       <div class="form-group row justify-content-center">
         <label for="keyword" class="col-sm-2 col-form-label text-white">Keyword<span id="req">*</span></label>
         <div class="col-sm-4">
-            <input type="text" (input)="KeyVal()"  [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" id="keyword" class="form-control bg-white" required placeholder="Enter Product Name (e.g. iPhone 8)" [class.error-input]="!isKeyVal">
+            <input type="text" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" id="keyword" class="form-control bg-white" required placeholder="Enter Product Name (e.g. iPhone 8)" >
             <small class="text-danger" *ngIf="!isKeyVal">Invalid keyword. Only letters and spaces are allowed.</small>
         </div>
     </div>
@@ -140,7 +140,7 @@
             <!-- Offset div to align with the form labels -->
             <div class="col-sm-4"></div> 
             <div class="col-sm-6 text-left">
-                <button type="submit" class="btn btn-light btn-adjusted text-dark" style="margin-right: 5px;" (click)="onSearchForm()" [disabled] = "updateBtm">
+                <button type="submit" class="btn btn-light btn-adjusted text-dark" style="margin-right: 5px;" (click)="onSearchForm()" >
                     <i class="fa fa-search"></i> Search
                 </button>
                 <button type="button" class="btn btn-light text-dark" (click)="clearForm()">
@@ -161,6 +161,11 @@
       <button class="text-dark" (click)="onProductClick(selectedProd)">Details<span class="material-icons">navigate_next</span>
       </button>
     </div>
+<div class="container bg-white p-3 my-3 text-white">
+    <div class="progress" id="loadingBar" *ngIf="isloading">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0"style="width: 90%"></div>
+    </div>
+  </div>
 
   <!-- Search Results -->
 <div *ngIf="!showProductDetails && buttonC=='results'" class="container bg-white p-3 my-3 text-white">

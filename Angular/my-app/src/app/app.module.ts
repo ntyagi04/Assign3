@@ -11,6 +11,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { RoundProgressModule } from 'angular-svg-round-progressbar';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MatTooltipModule 
+    MatTooltipModule ,
+    RoundProgressModule
   ],
   providers: [],
   bootstrap: [AppComponent]

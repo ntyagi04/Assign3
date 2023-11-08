@@ -1,4 +1,4 @@
-import { Component,OnInit,ViewChild } from '@angular/core';
+import { Component,Input,OnInit,ViewChild } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
@@ -19,8 +19,8 @@ declare var $:any
 
 export class Ass3searchFormComponent{
   @ViewChild('myModal', { static: false }) private myModal!: ElementRef;
-
-  keyword: string = 'iphone';
+  isprodselected:boolean = false;
+  keyword: string = '';
   category: string = 'AllCategory';
   new: string = '';
   used: string = '';
@@ -29,13 +29,13 @@ export class Ass3searchFormComponent{
   freeShipping: string = '';
   distance: string = '10';
   currentLocation: string = 'currentLocation';
-  other: string = '';
-  zipCode: string = '90007';
+  other: any = false;
+  zipCode: string = '';
   currLoc:string='';
   suggestions: string[] = [];
   items: any[] = [];
   showProductDetails: boolean = false;
-  selectedProd:any=[]
+  selectedProd:any={}
   productData: any;
   showImageModal: boolean = false;
   prodInfo:any[] = [];
@@ -51,13 +51,14 @@ export class Ass3searchFormComponent{
   similarProds:any[] = [];
   displayCount = 5; 
   showAll = false; 
+  search=false;
   // currentPage: number = 1;
   // itemsPerPage: number = 10;
    totalItems: number =0;
    totalPages: number =0;
    pages: number[] = [];
    selectedProductitemId: string = '';
-buttonC:any='results';
+  buttonC:any='results';
   currentPage: number = 1;
   itemsPerPage: number = 10;
   allItems: any[] = []; // This will hold all fetched items
@@ -69,19 +70,55 @@ buttonC:any='results';
   shareURL:string=''
   showZipAlert:boolean = false;
   isKeyVal:boolean= true;
-
+  noRecord:boolean=false;
   sortDirection: string = 'ascending'; 
-sortOrder: string='default';
-isloading:Boolean = false;
+  sortOrder: string='default';
+  isloading:Boolean = false;
+  isKeyValid:any =false;
   private ipinfoToken: string = '38d3cd684c4117';
+  errorMessage: string=''
+  isZipCodeInvalid!: boolean;
+  errorMessage1: string=''
   constructor(private http: HttpClient, private renderer: Renderer2, private el: ElementRef) {
     this.zipCode = '';
    
   }
 
-  KeyVal(){
-    this.isKeyVal = this.keyword.trim() ! == '';
-    this.updateBtm();
+  handleZipCodeChange(value: any) {
+    this.check_zipcode();
+    console.log('hello neha1')
+    if (value && value?.postalCode) {
+      this.zipCode = value.postalCode;}
+     else {
+      this.zipCode = value;
+    }
+  }
+  check_zipcode() {
+    console.log('hello')
+    console.log(this.zipCode)
+   
+    this.isZipCodeInvalid = this.other && this.zipCode.length==0;
+    console.log(this.other,this.isZipCodeInvalid)
+    if (this.isZipCodeInvalid ){
+          console.log("here inside" )
+            this.errorMessage1 = 'Please enter a zip code.';
+        } else {
+            console.log('errorgone')
+            this.errorMessage1 = '';
+        }
+  }
+  find(s:any):void {
+    console.log(s.value)
+    this.isKeyValid = s.touched && !s.value.trim()
+    if(this.isKeyValid)
+    {
+      this.errorMessage='Please enter a keyword';
+    }
+    else{
+      this.errorMessage=''
+    }
+  
+    // this.updateBtm();
   }
   // ZipVal(){
     
@@ -93,16 +130,18 @@ isloading:Boolean = false;
 
   //   this.updateBtm();
   // }
-  updateBtm(){
-    const isKeywordInvalidOrEmpty = !this.isKeyVal || !this.keyword.trim().length;
-    
-    // const isKeywordInvalidOrEmpty = !this.isKeywordValid || !this.keyword.trim().length;
-    //  const isZipInvalidOrEmpty = (!this.isZipCodeValid || this.zipCode.trim() === '');
-    
-    //  this.isBtn = isKeywordInvalidOrEmpty || isZipInvalidOrEmpty 
-    // this.cd.detectChanges();
-    this.isBtn = isKeywordInvalidOrEmpty 
-  }
+  // updateBtm(){
+  //   const isKeywordInvalidOrEmpty = this.isKeyVal;
+  //   const isZipCodeSelected=(this.other && !this.showZipAlert) 
+  //   console.log(isKeywordInvalidOrEmpty,isZipCodeSelected)
+  //   if (this.other){
+  //     this.isBtn = isKeywordInvalidOrEmpty && isZipCodeSelected
+  //   }
+  //   else{
+  //   this.isBtn = isKeywordInvalidOrEmpty
+  //   }
+
+  // }
 
   
   openModal() {  
@@ -115,16 +154,19 @@ isloading:Boolean = false;
     this.getCurLoc()
    }
   // Function to handle zip code input changes
-  onZipCodeChange() {
-    if(this.other && !this.zipCode.trim()) {
-      // Show an alert message
-      this.showZipAlert = true;
-    } else {
-      // Hide the alert message
-      this.showZipAlert = false;
-    }
-
-    if (this.zipCode.length > 2) {
+  onZipCodeChange() :void{
+    console.log(this.zipCode)
+    this.other=true
+    
+    // if(this.other && !this.zipCode.trim()) {
+    //   // Show an alert message
+    //   this.showZipAlert = true;
+    // } else {
+    //   // Hide the alert message
+    //   this.showZipAlert = false;
+    // }
+    // // this.updateBtm()
+    if (this.zipCode.trim().length > 2) {
         this.http.get(`/api/autocomplete-zip?zipCode=${this.zipCode}`)
             .subscribe((data: any) => {
                 this.suggestions = data.suggestions;
@@ -136,6 +178,7 @@ isloading:Boolean = false;
 
   // function to display Zip code changes
   selectSuggestion(suggestion: string) {
+    this.other=true
       this.zipCode = suggestion;
       this.suggestions = [];
   }
@@ -158,9 +201,16 @@ isloading:Boolean = false;
     this.freeShipping = '';
     this.distance = ''; 
     this.currentLocation = ''; 
-    this.other = '';
+    this.search=false;
+    this.other = false;
     this.zipCode = ''; 
-    this.showProductDetails = true;
+    this.showProductDetails = false;
+    this.items=[];
+    this.totalItems=0;
+    this.paginatedItems=[];
+    this.wishlistItems=[];
+    this.currentLocation = 'currentLocation';
+
   }
 
   loadWishlist() {
@@ -178,6 +228,7 @@ onPageChange(page: number) {
   this.currentPage = page;
 }
   onSearchForm() {
+    console.log("Category",this.category);
     type CategoryKey = keyof typeof categoryMap; 
 
     const categoryMap = {
@@ -205,10 +256,14 @@ this.showProductDetails=false
           localPickup: this.localPickup ? 'true' : 'false',
           freeShipping: this.freeShipping ? 'true' : 'false',
           distance: this.distance || '',
-          zipCode: this.other ? this.zipCode : this.currLoc || ''
+          zipCode: this.other ? this.zipCode.trim() : this.currLoc || ''
       }
   });
+  // if(this.showProductDetails.length < 0 ){
+  //   this.noRecord = true
+  // }
   this.isloading = true;
+  this.search=true
 
   console.log(params);
   this.http.get('/api/eBayFormData', {params}).subscribe((data: any) => {
@@ -259,7 +314,7 @@ processSellerData(items: any[], itemId: string): any[] {
   console.log("sellerInfo----",sellerInfo)
   console.log("storefron-----t",storefront)
   const sellerData = {
-    feedbackScore: sellerInfo.feedbackScore,
+    feedbackScore: parseInt(sellerInfo.feedbackScore),
     popularity: sellerInfo.positiveFeedbackPercent,
     feedbackRatingStar: sellerInfo.feedbackRatingStar,
     topRated: sellerInfo.topRatedSeller ,  
@@ -285,7 +340,6 @@ processSimilarProduct(itemId: string): any[] {
 }
 processProductImages(items: any[],itemId: string): any[] {
   this.isloading = true;
-
   const selectedItem = items.find(item => item.itemId[0] === itemId[0]);
   if (!selectedItem) {
       console.log('Item not found');
@@ -301,6 +355,8 @@ processProductImages(items: any[],itemId: string): any[] {
   return []
   
 }
+
+
 shareMessage(items: any[],itemId: string) { 
   const selectedItem = items.find(item => item.itemId[0] === itemId[0]);
   const productName = selectedItem.title[0] ?? ''; 
@@ -316,6 +372,7 @@ shareMessage(items: any[],itemId: string) {
     if (selectedItem) { 
       console.log(selectedItem) 
       const link = selectedItem.viewItemURL; 
+     
       this.shareURL = `https://www.facebook.com/sharer/sharer.php?u=${link}"e=${this.facebookShareMsg}` 
       //window.open(this.shareURL, '_blank'); 
       
@@ -370,6 +427,9 @@ onListClick(): void {
   this.currentPage = 1;
   this.updatePaginatedItems();
 }
+getTotal(): number {
+  return this.wishlistItems.reduce((acc, item) => acc + parseFloat(item.price), 0);
+}
 
 onProductClick(item: any) {
   this.isloading = true;
@@ -377,7 +437,8 @@ onProductClick(item: any) {
   this.showProductDetails = true;
   this.activeTab='product'
   this.selectedProductitemId = item.itemId;
-this.selectedProd=item
+  this.selectedProd=item
+  console.log("help",this.selectedProd)
   this.http.get(`/api/singleItemDetail?itemId=${this.selectedProductitemId}`).subscribe((data: any) => {
       // Process and log the shipping data for the clicked product
      
@@ -411,6 +472,7 @@ this.selectedProd=item
       }
       if (tab === 'photos') {
         this.showImageModal=true
+        //this.processProductImages(this.selectedProd) 
         //this.loadSellerData(); // You'll need to implement this method
       }
       // Implement similar conditions and methods for other tabs if needed
@@ -533,6 +595,64 @@ sortProducts() {
     });
   }
 }
+
+getStarColor(score: number): string {
+  if (score >= 0 && score <= 9) {
+    return ''; // No color for score 0-9.
+  } 
+  if (score <= 49) {
+    return 'yellow';
+  } 
+  if (score <= 99) {
+    return 'blue';
+  } 
+  if (score <= 499) {
+    return 'turquoise';
+  } 
+  if (score <= 999) {
+    return 'purple';
+  } 
+  if (score <= 4999) {
+    return 'red';
+  } 
+  if (score <= 9999) {
+    return 'green';
+  } 
+   if (score <= 24999) {
+    return 'yellow';
+  } 
+   if (score <= 49999) {
+    return 'turquoise';
+  } 
+  if (score <= 99999) {
+    return 'purple';
+  } 
+   if (score <= 499000) {
+    return 'red';
+  } 
+   if (score <= 999000) {
+    return 'green';
+  } 
+   {
+    return 'silver';
+  }
+}
+processTitle(title1:string): string {
+  console.log(title1)
+
+  console.log('hello',title1.length)
+
+  if (title1.length > 35) {
+    let shortenedTitle = title1.slice(0, 25);
+    const lastSpaceIndex = shortenedTitle.lastIndexOf(' ');
+    if (lastSpaceIndex !== -1) {
+      shortenedTitle = shortenedTitle.slice(0, lastSpaceIndex);
+    }
+    return `${shortenedTitle}…`;
+  }
+  return title1;
+}
+
 
     
 }

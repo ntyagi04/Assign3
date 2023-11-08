@@ -5,13 +5,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
-
   },
   "author": "",
   "license": "ISC",
   "keywords": [],
   "description": "",
   "dependencies": {
+    "angular-svg-round-progressbar": "^11.0.0",
     "axios": "^1.6.0",
     "btoa": "^1.2.1",
     "cors": "^2.8.5",

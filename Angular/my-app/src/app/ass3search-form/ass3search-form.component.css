@@ -6,7 +6,11 @@
   text-decoration: 'underline';
   cursor: pointer;
 }
-
+.custom {
+  color: #e4e8ec !important;
+    background-color: rgb(27, 26, 26) !important;
+    border-color: #161616 #121213 rgb(17, 17, 17) !important;
+}
 .zip-label{
     width:90%;
 }
@@ -120,9 +124,14 @@ button{
     margin-left: auto;
 
   }
+  
   .facebookIcon{
-    width:25%;
-    height:50%;
+    
+    max-height: 30px; /* maintains the aspect ratio of the image */
+    width: auto; /* maintains the aspect ratio of the image */
+    vertical-align: top;
+    height:fit-content;
+    width:fit-content;
   }
   .facebookIcon img{
     height:fit-content;
@@ -224,6 +233,7 @@ button{
 .image-cell {
   /* Optional: Set a specific height or keep it auto for images to maintain their aspect ratio */
   height: auto;
+  border: 5px black;
 }
 
 .image-cell img {
@@ -258,6 +268,12 @@ button{
 .shipdone {
   color:green
 }
+.shipreturn {
+  color:green
+}
+.shipreturn {
+  color:green
+}
 .centered-button {
   background-color: black; /* Set the background color to black */
   color: white; /* Set the font color to white */
@@ -273,3 +289,21 @@ button{
   transition: background-color 0.3s; 
 }
 
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: black; 
+  
+  padding: 10px; 
+  height:5% !important;
+}
+.carousel-control-prev-icon:after,
+.carousel-control-next-icon:after {
+  content: '';
+}
+.yellow-star { color: yellow; }
+.blue-star { color: blue; }
+.turquoise-star { color: turquoise; }
+.purple-star { color: purple; }
+.red-star { color: red; }
+.green-star { color: green; }
+.silver-star { color: silver; }

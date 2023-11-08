@@ -19,12 +19,47 @@
       </div> -->
 
       <div class="form-group row justify-content-center">
-        <label for="keyword" class="col-sm-2 col-form-label text-white">Keyword<span id="req">*</span></label>
+        <label for="keyword" class="col-sm-2 col-form-label text-white text-right">Keyword<span id="req" style = "color:red;">*</span></label>
         <div class="col-sm-4">
-            <input type="text" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" id="keyword" class="form-control bg-white" required placeholder="Enter Product Name (e.g. iPhone 8)" >
-            <small class="text-danger" *ngIf="!isKeyVal">Invalid keyword. Only letters and spaces are allowed.</small>
+            <input type="text" [(ngModel)]="keyword" name='keyword' class="form-control bg-white" required placeholder="Enter Product Name (e.g. iPhone 8)" #key='ngModel' [ngClass]="{'is-invalid':isKeyValid}" (blur)="find(key)">
+            <div *ngIf='isKeyValid && keyword.trim().length==0'>
+            <small class="text-danger" >Please enter a keyword</small>
+            </div>
+            
+            
         </div>
     </div>
+
+    <!-- <div class="form-group row justify-content-center">
+      <label for="keyword" class="col-sm-2 col-form-label text-white">Keyword<span id="req">*</span></label>
+      <div class="col-sm-4">
+          <input type="text" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" id="keyword" class="form-control bg-white" required placeholder="Enter Product Name (e.g. iPhone 8)" [ngClass]="{'is-invalid': isKeyValue}"
+          (blur)="check(isKeyValue)" >
+          <div *ngIf="keyword.length==0">
+            <small class="text-danger">{{ errorMessage }}</small>
+          </div>
+          
+      </div>
+  </div> -->
+
+    <!-- <div class="row mb-3 small">
+      <div class="col-sm-3"><label for="keyword">Keyword<span style="color: #ff0000">*</span>:</label></div>
+      <div class='col-sm-9 '>
+        <input type="text" [(ngModel)]="keyword" 
+        name="keyword"  class="form-control-sm"  
+        placeholder="Enter Product Name (eg. iPhone 8)" 
+        required autocomplete="on"
+        #keywordInput="ngModel"
+        [ngClass]="{'is-invalid': isKeywordInvalid}"
+        (blur)="check(keywordInput)" style="min-width: 100%;">
+        <div *ngIf="keyword.length==0">
+          <small class="text-danger">{{ errorMessage }}</small>
+        </div>
+        
+      </div>          
+  </div>
+
+ -->
 
 
         <div class="form-group row justify-content-center">
@@ -32,14 +67,14 @@
             <div class="col-sm-4">
                 <select class="form-control" name="category" [(ngModel)]="category" id="category" value="AllCategory" [ngModelOptions]="{standalone: true}">
                     <option value="AllCategory">All Category</option>
-                    <option value="art">Art</option>
-                    <option value="baby">Baby</option>
-                    <option value="books">Books</option>
-                    <option value="clothingShoesAccessories">Clothing, Shoes & Accessories</option>
-                    <option value="computersTabletsNetworking">Computers/Tablets & Networking</option>
-                    <option value="healthBeauty">Health & Beauty</option>
-                    <option value="music">Music</option>
-                    <option value="videoGamesConsoles">Video Games & Consoles</option>
+                    <option value="Art">Art</option>
+                    <option value="Baby">Baby</option>
+                    <option value="Books">Books</option>
+                    <option value="Clothing, Shoes & Accessories">Clothing, Shoes & Accessories</option>
+                    <option value="Computers/Tablets & Networking">Computers/Tablets & Networking</option>
+                    <option value="Health & Beauty">Health & Beauty</option>
+                    <option value="Music">Music</option>
+                    <option value="Video Games & Consoles">Video Games & Consoles</option>
                 </select>
             </div>
         </div>
@@ -91,56 +126,46 @@
                     <label class="form-check-label" for="currentLocation">Current Location</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" [(ngModel)]="other" type="radio" name="locationOptions" id="other" value="other">
+                    <input class="form-check-input" [(ngModel)]="other" type="radio" name="locationOptions" id="other" (ngModelChange)="check_zipcode()" value="true" #otherLocation='ngModel'>
                     <label class="form-check-label" for="other">Other. Please specify zip code:</label>
                 </div>
                 <!-- <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control mt-2" id="zip" value="" (input)="onZipCodeChange()"> -->
-                <input type="text" [(ngModel)]="zipCode" [ngModelOptions]="{standalone: true}" class="form-control mt-2" id="zip" value="" (input)="onZipCodeChange()" >
-                <div *ngIf="showZipAlert" class="alert-message">Please enter a zip code.</div>
+
+                <input type="text" 
+                class="form-control form-control-sm" 
+                [(ngModel)]="zipCode" 
+                name="zipCode"
+                #zipCodeInput="ngModel"
+                
+                required pattern="^\d{5}$"
+                
+               
+                [style.border]="zipCodeInput.invalid && other === true ? '1px solid red' : '1px solid #ced4da'"
+                (ngModelChange)="handleZipCodeChange($event)"
+                [ngClass]="{'is-invalid': isZipCodeInvalid && zipCodeInput.touched && other === true}"
+                (input)="onZipCodeChange()" required>
+<!-- 
+                <input type="text" [(ngModel)]="zipCode" class="form-control mt-2"   >
+                <div *ngIf="showZipAlert" class="alert-message">Please enter a zip code.</div> -->
 
                 <div *ngIf="suggestions?.length" class="autocomplete-suggestions ">
                     <div *ngFor="let suggestion of suggestions" class="text-dark" (click)="selectSuggestion(suggestion)">
                         {{ suggestion }}
                     </div>
                 </div>
+                <small class='text-danger' *ngIf="errorMessage1.length>0">{{errorMessage1}}</small>
               </div>
         </div>
-<!-- 
-        <input type="text" id="zipCode"class="form-control" 
-                                 [(ngModel)]="zipCode" 
-                                 [ngModelOptions]="{standalone: true}" 
-                                 [matAutocomplete]="auto"
 
-                                 (ngModelChange)="onLocationChange()" 
-                                 [disabled]="!useOtherLocation" 
-                                 [class.is-invalid]="useOtherLocation && (!isZipCodeValid || zipCode.trim() === '')"
-                                 >
-                                 <mat-autocomplete #auto="matAutocomplete">
-                                    <ng-container *ngIf="autoCompleteResults.length > 0">
-                                        <mat-option *ngFor="let result of autoCompleteResults" [value]="result.postalCode">
-                                            {{ result.postalCode }}
-                                        </mat-option>
-                                    </ng-container>
-                                </mat-autocomplete>
-                        </div>
-                        
-                      </div>
-                      
-    <!-- </div> 
-    
-    
-    
-    
-    <small class="text-danger" *ngIf="useOtherLocation && !isZipCodeValid">Invalid ZIP Code. It should be a 5-digit number.</small>
-</div>
-                </div> -->
 
 
         <div class="form-group row ">
             <!-- Offset div to align with the form labels -->
             <div class="col-sm-4"></div> 
             <div class="col-sm-6 text-left">
-                <button type="submit" class="btn btn-light btn-adjusted text-dark" style="margin-right: 5px;" (click)="onSearchForm()" >
+                <button type="submit" class="btn btn-light btn-adjusted text-dark" style="margin-right: 5px;"
+                [disabled]= "(other==true && isZipCodeInvalid ) || keyword.trim().length==0"
+                (click)="onSearchForm()" >
                     <i class="fa fa-search"></i> Search
                 </button>
                 <button type="button" class="btn btn-light text-dark" (click)="clearForm()">
@@ -157,19 +182,43 @@
         [class.btn-white]="buttonC !== 'wish'"><a>Wish List</a></button>
     </div>
 
+    
+   
+<!--      
     <div *ngIf="!showProductDetails && paginatedItems.length > 0">
-      <button class="text-dark" (click)="onProductClick(selectedProd)">Details<span class="material-icons">navigate_next</span>
+      <button class="btn btn-light btn-adjusted text-dark" (click)="onProductClick(selectedProd)" [disabled]= "selectedProd?.itemId">Details<span class="material-icons">navigate_next</span>
       </button>
-    </div>
+      </div> -->
+   
+
 <div class="container bg-white p-3 my-3 text-white">
     <div class="progress" id="loadingBar" *ngIf="isloading">
       <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0"style="width: 90%"></div>
     </div>
   </div>
 
+  <div class="container" >
+    <!-- Bootstrap alert for No Records message -->
+    <div class="alert alert-warning" role="alert" *ngIf="(search && items.length == 0 && !isloading) || (buttonC=='wish' && wishlistItems.length==0)">
+      No Records.
+    </div>
+  </div>
+
   <!-- Search Results -->
 <div *ngIf="!showProductDetails && buttonC=='results'" class="container bg-white p-3 my-3 text-white">
+  <div style="display: flex; justify-content: end;"> 
+    <!-- List Button on the left -->
+    <div *ngIf="!showProductDetails && paginatedItems.length > 0" style="display:flex; justify-content: flex-end;">
+    
+    <button class="btn btn-light btn-adjusted text-dark" (click)="onProductClick(selectedProd)" [disabled]= "!selectedProd?.itemId">
+      <span class="material-icons">arrow_back_ios_new</span>
+      Details
+    </button>
+  
+    </div>
+  </div>
     <table *ngIf="paginatedItems.length > 0 && !showProductDetails" class=" table table-dark table-striped text-white">
+      
       <thead>
         <tr class="text-center"> 
           <th scope="col">#</th>
@@ -183,14 +232,15 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of paginatedItems; let i = index">
-          <td class="align-middle text-center">{{ i + 1 }}</td>
+          <!-- <td class="align-middle text-center">{{ i + 1 }}</td> -->
+          <td class="align-middle text-center">{{ (i + 1) + (currentPage - 1) * itemsPerPage }}</td>
           <td class="align-middle text-center"><a href="{{ item.image }}" target="_blank" >
             <img [src]="item.image" alt="N/A" style="width:50px; height:auto;">
           </a></td>
           <!-- <td class="align-middle" (click)="onProductClick(item.itemId)" > -->
             <td class="align-middle" (click)="onProductClick(item)" >
             <!-- <a href="" class="text-decoration-none">{{ item.title }}</a> -->
-            <a (click)="onProductClick(item)" matTooltip="{{item.title}}" class="styleTitle">{{ item.title }}</a>
+            <a (click)="onProductClick(item)" matTooltip="{{item.title}}" class="styleTitle">{{ processTitle(item.title) }}</a>
           </td>
           <td class="align-middle text-center">{{ item.price || 'N/A' }}</td>
           <td class="align-middle text-center">
@@ -240,10 +290,11 @@
 
 </div>
     
- <!-- WishList Items    -->
-    <div class="container bg-white p-3 my-3 text-white" *ngIf="!showProductDetails && buttonC=='wish' && wishlistItems.length>0">
-      <h2>test</h2>
-      <table class="wishlist-table" class="table ">
+
+
+ <!-- WishList Items    --> 
+    <div class="container bg-dark p-3 my-3" *ngIf="!showProductDetails && buttonC=='wish' && wishlistItems.length>0">
+      <table class=" table table-dark table-striped text-white">
         <thead>
           <tr>
             <th>#</th>
@@ -261,7 +312,7 @@
             <!-- <td>{{ product.title }}</td> -->
             <td class="align-middle" (click)="onProductClick(product)" >
               <!-- <a href="" class="text-decoration-none">{{ item.title }}</a> -->
-              <a (click)="onProductClick(product)" matTooltip="{{product.title}}" class="styleTitle">{{ product.title }}</a>
+              <a (click)="onProductClick(product)" matTooltip="{{product.title}}" class="styleTitle">{{ processTitle(product.title )}}</a>
             </td>
             <td>{{ product.price | currency }}</td>
             <td>{{ product.shipping }}</td>
@@ -274,80 +325,71 @@
             </button>
             </td>
           </tr>
+          <tr>
+            <td colspan="4"></td>
+            <td>Total Price:</td>
+            <td>{{ getTotal() | currency }}</td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
-    </div>
-    
+  
+  </div>
 
-    <!-- <div *ngIf="totalItems > itemsPerPage && buttonC!=='wish'" class="d-flex justify-content-center my-3" >
-      <nav aria-label="Page navigation" style="border: none;" *ngIf="totalItems > itemsPerPage" class="d-flex justify-content-center my-3">
-        <ul class="pagination">
-          <li class="page-item" [class.disabled]="currentPage === 1">
-            <a class="page-link" (click)="selectPage(currentPage - 1)" aria-label="Previous">
-              <span aria-hidden="true">&laquo; Previous</span>
-            </a>
-          </li>
-      
-          <li class="page-item" *ngFor="let page of pages" [class.active]="currentPage === page">
-            <a class="page-link"  (click)="selectPage(page)" >{{ page }}</a>
-          </li>
-          <li class="page-item" [class.disabled]="currentPage === totalPages">
-            <a class="page-link" (click)="selectPage(currentPage + 1)" aria-label="Next">
-              <span aria-hidden="true">Next &raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-   -->
-<!-- 
-   <div class="container">-->
+
   <div *ngIf="showProductDetails">
-
-    <div>
-      <div class="container"> <div class="row"> 
-        <div class="col text-left">
-
-      <button class = "btn btn-primary" (click)="onListClick()" class="text-dark"><span class="material-icons">arrow_back_ios_new</span>List</button>
-    </div>
-    <div class="col text-right">
-        <button class="btn facebook_button">
-          <a [href] ="shareURL" target = "_blank">
-            <img src = "./assets/facebook.png" >
-        </a>
-          <!-- <img src="../../assets/facebook.png" alt="Facebook" style="width: 28px; height: 28px;"> -->
-        </button>
-        <button class="btn btn-primary btn-light shopping_cart_icon" style="padding: 0;" (click)="addToWishlist(selectedProd)" *ngIf="!selectedProd?.addedToWishlist">
-          <span class="material-icons" style="color:black;">
-            add_shopping_cart
-          </span>
-        </button>
-        <button class="btn btn-primary btn-light shopping_cart_icon" style="padding: 0;" (click)="removeFromWishlist(selectedProd)" *ngIf="selectedProd?.addedToWishlist">
-          <span class="material-icons" style="color:#ffcd44;">
-            remove_shopping_cart
-          </span>
-        </button>
-      </div>
-      </div>
+    <div class="text-center">
+      <p>{{ selectedProd?.title}}</p>
+  </div>
+     <div>
+      <div class="container mt-5">
+        <div style="display: flex; justify-content: space-between; align-items: center;"> 
+          <!-- List Button on the left -->
+          <button (click)="onListClick()" class="text-left btn btn-transparent text-dark">
+            <span class="material-icons">arrow_back_ios_new</span>
+            List
+          </button>
+        
+          <!-- Other Buttons on the right -->
+          <div style="display: flex; align-items: center;">
+            <button class="btn facebook_button h-25">
+              <a [href]="shareURL" target="_blank">
+                <img src="./assets/facebook.png" class="facebookIcon">
+              </a>
+            </button>
+            <button class="btn btn-light shopping_cart_icon" style="padding: 0;" (click)="addToWishlist(selectedProd)" *ngIf="!selectedProd?.addedToWishlist">
+              <span class="material-icons facebookIcon" style="color:black;">
+                add_shopping_cart
+              </span>
+            </button>
+            <button class="btn btn-light shopping_cart_icon" style="padding: 0;" (click)="removeFromWishlist(selectedProd)" *ngIf="selectedProd?.addedToWishlist">
+              <span class="material-icons" style="color:#ffcd44;">
+                remove_shopping_cart
+              </span>
+            </button>
+          </div>
+        </div>
+        
     
   
     <!-- Tab links -->
-    <div *ngIf="showProductDetails">
+    <div *ngIf="showProductDetails" class="d-flex justify-content-end">
+      
     <ul class="nav nav-tabs">
-      <li class="nav-item nav-pills" (click)="selectTab('product')">
-        <a class="nav-link" [class.active]="activeTab === 'product'">Product</a>
+      <li class="nav-item " (click)="selectTab('product')">
+        <a class="nav-link" [class.active]="activeTab == 'product'" [class.bg-dark]="activeTab == 'product'" [class.text-white]="activeTab == 'product'">Product</a>
       </li>
       <li class="nav-item nav-pills" (click)="selectTab('photos')">
-        <a class="nav-link" [class.active]="activeTab === 'photos'">Photos</a>
+        <a class="nav-link" [class.active]="activeTab === 'photos'" [class.bg-dark]="activeTab == 'photos'" [class.text-white]="activeTab == 'photos'">Photos</a>
       </li>
       <li class="nav-item nav-pills" (click)="selectTab('shipping')">
-        <a class="nav-link" [class.active]="activeTab === 'shipping'">Shipping</a>
+        <a class="nav-link" [class.active]="activeTab === 'shipping'" [class.bg-dark]="activeTab == 'shipping'" [class.text-white]="activeTab == 'shipping'">Shipping</a>
       </li>
       <li class="nav-item nav-pills" (click)="selectTab('seller')">
-        <a class="nav-link" [class.active]="activeTab === 'seller'">Seller</a>
+        <a class="nav-link" [class.active]="activeTab === 'seller'" [class.bg-dark]="activeTab == 'seller'" [class.text-white]="activeTab == 'seller'">Seller</a>
       </li>
       <li class="nav-item nav-pills" (click)="selectTab('similar')">
-        <a class="nav-link" [class.active]="activeTab === 'similar'">Similar Products</a>
+        <a class="nav-link" [class.active]="activeTab === 'similar'" [class.bg-dark]="activeTab == 'similar'" [class.text-white]="activeTab == 'similar'">Similar Products</a>
       </li>
     </ul>
   </div>
@@ -446,6 +488,7 @@
 
       <div  *ngIf="activeTab === 'photos'" class="tab-content">  
         <div class="row row-cols-1 row-cols-md-3 g-4">
+          
           <div *ngFor="let imageUrl of prodImages" class="col">
             <div class="card">
               <a href="{{ imageUrl.link }}" target="_blank">
@@ -559,44 +602,117 @@
                 </tr>                       
                 <tr id="ReturnsAcceptedRow">
                     <td>Returns Accepted</td>
-                    <td id="ReturnsAcceptedVal">{{ shippingInfo1[0].returns }}</td>
+                    <td id="ReturnsAcceptedVal">
+                    <span class="material-symbols-outlined" [class.shipdone]="shippingInfo1[0].returns" [class.shipclose]="!shippingInfo1[0].returns" >
+                    {{ shippingInfo1[0].returns ? 'check' : 'close'}}
+                    </span>
+                  </td>
                 </tr>
             </tbody>
         </table>
       </div>
   
-      <!-- Seller Information -->
+
+      <!-- <div *ngIf="activeTab === 'seller'">
+        <table class="table table-striped table-dark">
+          <tbody *ngIf="shippingInfo1.length > 0">
+            <tr id="StoreNameRow" class="text-center" >
+              <td colspan="2" class="uppercase-text">{{ sellerInfo[0].storeName}}</td>
+            </tr> 
+            <tr id="FeedbackScoreRow">
+              <td>Feedback Score</td>
+              <td id="FeedbackScoreVal">{{ sellerInfo[0].feedbackScore }}</td>
+          </tr> 
+            <tr id="PopularityRow">
+              <td>Popularity</td>
+              <td id="PopularityVal">
+                <div class="progress-content" style="position: relative;">
+                    <div class="currentValue" style="position: absolute; color: white; line-height: 4; padding-left:6px;">{{ sellerInfo[0].popularity }}%</div>
+                    <round-progress [current]="sellerInfo[0].popularity" [max]="100" [color]="'green'" [radius]="25" [stroke]="3"></round-progress>
+                </div>
+            </td>            
+      </tr>
+
+            <tr id="FeedbackRatingStarRow">
+              <td>Feedback Rating Star</td>
+              <td id="FeedbackRatingStarVal">
+                <i *ngIf="sellerInfo[0]?.feedbackScore >= 10000" class="material-icons" [ngStyle]="{'color': getStarColor(sellerInfo[0].feedbackScore)}">stars</i>
+                <i *ngIf="sellerInfo[0]?.feedbackScore < 10000" class="material-icons" [ngStyle]="{'color': getStarColor(sellerInfo[0].feedbackScore)}">star_border</i>
+              </td>
+            </tr>
+
+            <tr id="StoreNameRow">
+              <td>Store Name</td>
+              <td id="StoreNameVal">{{ sellerInfo[0].storeName}}</td>
+            </tr>                       
+            <tr id="StoreURLRow">
+              <td>Buy Product At</td>
+              <td>
+                <a [href]="sellerInfo[0].storeURL" target="_blank">Store</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+      
+
       <div *ngIf="activeTab === 'seller'">
         <table class="table table-striped table-dark">
-            <tbody *ngIf="shippingInfo1.length > 0">
-                <tr id="FeedbackScoreRow">
-                    <td>Feedback Score</td>
-                    <td id="FeedbackScoreVal">{{ sellerInfo[0].feedbackScore }}</td>
-                </tr>
-                <tr id="PopularityRow">
-                    <td>Popularity</td>
-                    <td id="PopularityVal">{{ sellerInfo[0].popularity}}</td>
-                </tr>                       
-                <tr id="FeedbackRatingStarRow">
-                    <td>Feedback Rating Star</td>
-                    <td id="FeedbackRatingStarVal">{{ sellerInfo[0].feedbackRatingStar }}</td>
-                </tr>
-                <tr id="TopRatedRow">
-                    <td>Top Rated</td>
-                    <td id="TopRatedVal">{{sellerInfo[0].topRated}}</td>
-                </tr>   
-                <tr id="StoreNameRow">
-                    <td>Store Name</td>
-                    <td id="StoreNameVal">{{ sellerInfo[0].storeName}}</td>
-                </tr>                       
-                <tr id="StoreURLRow">
-                    <td>Store URL</td>
-                    <a [href]="sellerInfo[0].storeURL" target="_blank">{{ sellerInfo[0].storeName }}</a>
-                </tr>
-            </tbody>
-            <!-- product.timeLeft.split('P')[1].split('D')[0] -->
+          <tbody *ngIf="shippingInfo1.length > 0">
+            <!-- Store Name Row -->
+            <tr id="StoreNameRow" class="text-center" *ngIf="sellerInfo[0]?.storeName">
+              <td colspan="2" class="uppercase-text">{{ sellerInfo[0].storeName }}</td>
+            </tr> 
+            <!-- Feedback Score Row -->
+            <tr id="FeedbackScoreRow" *ngIf="sellerInfo[0]?.feedbackScore">
+              <td>Feedback Score</td>
+              <td id="FeedbackScoreVal">{{ sellerInfo[0].feedbackScore }}</td>
+            </tr> 
+            <!-- Popularity Row -->
+            <tr id="PopularityRow" *ngIf="sellerInfo[0]?.popularity || sellerInfo[0]?.popularity === 0">
+              <td>Popularity</td>
+              <td id="PopularityVal">
+                <div class="progress-content" style="position: relative;">
+                    <div class="currentValue" style="position: absolute; color: white; line-height: 4; padding-left:6px;">{{ sellerInfo[0].popularity }}%</div>
+                    <round-progress [current]="sellerInfo[0].popularity" [max]="100" [color]="'green'" [radius]="25" [stroke]="3"></round-progress>
+                </div>
+              </td>            
+            </tr>
+            <!-- Feedback Rating Star Row -->
+            <!-- <tr id="FeedbackRatingStarRow" *ngIf="sellerInfo[0]?.feedbackScore || sellerInfo[0]?.feedbackScore === 0">
+              <td>Feedback Rating Star</td>
+              <td id="FeedbackRatingStarVal">
+                <i *ngIf="sellerInfo[0]?.feedbackScore >= 10000" class="material-icons" [ngStyle]="{'color': getStarColor(sellerInfo[0].feedbackScore)}">stars</i>
+                <i *ngIf="sellerInfo[0]?.feedbackScore < 10000" class="material-icons" [ngStyle]="{'color': getStarColor(sellerInfo[0].feedbackScore)}">star_border</i>
+              </td>
+            </tr> -->
+
+            <tr id="feedback_rating_star_row">
+              <th>Feedback Rating Star</th>
+              <td id="feedback_rating_star">
+                  <i class="material-icons" [style.color]="getStarColor(sellerInfo[0].feedbackScore)">
+                      stars
+                  </i>
+              </td>
+          </tr>
+
+
+            <tr id="StoreNameRow" *ngIf="sellerInfo[0].storeName || sellerInfo[0].storeName === 0">
+              <td>Store Name</td>
+              <td id="StoreNameVal">{{ sellerInfo[0].storeName}}</td>
+            </tr>  
+
+            <!-- Store URL Row -->
+            <tr id="StoreURLRow" *ngIf="sellerInfo[0]?.storeURL">
+              <td>Buy Product At</td>
+              <td>
+                <a [href]="sellerInfo[0].storeURL" target="_blank">Store</a>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
+      
 
 
       <!-- Similar Products -->
@@ -614,35 +730,20 @@
                     </select>
                   </div>
                   <div>
-                      <select class="form-control" [(ngModel)]="sortDirection" (change)="sortProducts()"> 
-                          <option value="ascending" selected>Ascending</option>
-                          <option value="descending">Descending</option>
-                      </select>
+                    <select class="form-control" [(ngModel)]="sortDirection" (change)="sortProducts()" [disabled]="sortOrder === 'default'"> 
+                      <option value="ascending" selected>Ascending</option>
+                      <option value="descending">Descending</option>
+                    </select>
                         
                   </div>
                 </div>
               </div>
             </div>
-            <!-- <div *ngFor="let product of similarProds.slice(0, displayCount); let i = index" class="product-card p-3 mb-3 rounded product-card bg-dark text-white">
-              <div class="d-flex justify-content-start align-items-center">  
-                <div class="flex-shrink-0">
-                <img [src]="product.imageURL" alt="{{product.prodName}}" class="product-image img-fluid mr-3" style="max-width: 100px;">
-                <div class="product-details mb-1 d-block font-weight-bold" style="color: #5ea4bf">
-                  <p><a href="{{ product?.viewItemURL }}" class="mb-1 d-block font-weight-bold" style="color: #5ea4bf;">{{product?.prodName}}</a></p> 
-                  <p class="mb-1" style="color: green;">Price: ${{ product.price}}</p>
-                    <p class="mb-1" style="color: yellow;">Shipping Cost: {{product.shippingCost}}</p>
-                    <p class="mb-0">Days Left: {{product.daysLeft}}</p>
-                </div>
-                <br>
-                </div>
-                </div>
-            </div> -->
-        <!-- </div> -->
         <div *ngFor="let product of similarProds.slice(0, displayCount); let i = index" class="product-card p-3 mb-3 rounded bg-dark text-white">
           <div class="d-flex justify-content-between align-items-center">
             <!-- Image Container on the left -->
             <div class="flex-shrink-0">
-              <img [src]="product.imageURL" alt="{{ product.prodName }}" class="product-image img-fluid" style="max-width: 100px;">
+              <img [src]="product.imageURL" target = "_blank" alt="{{ product.prodName }}" class="product-image img-fluid" style="max-width: 100px;">
             </div>
             <!-- Details Container on the right -->
             <div class="product-details">

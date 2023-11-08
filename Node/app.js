@@ -116,7 +116,7 @@ app.get('/api/autocomplete-zip', async (req, res) => {
 });
 
 app.get('/api/eBayFormData', async (req, res) => {
-    // console.log("YOOOO",req.query);
+     console.log("YOOOO",req.query);
     const { keyword, category, new: isNew, used, unspecified, localPickup, freeShipping, distance, zipCode } = req.query;
 
     let url = `https://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsAdvanced&SERVICE-VERSION=1.0.0&SECURITY-APPNAME=${APPID}&RESPONSE-DATA-FORMAT=JSON&RESTPAYLOAD&paginationInput.entriesPerPage=50&keywords=${keyword}&buyerPostalCode=${zipCode}`;
@@ -127,6 +127,10 @@ app.get('/api/eBayFormData', async (req, res) => {
         url += `&itemFilter(${filterIndex}).name=MaxDistance&itemFilter(${filterIndex}).value=${distance}`;
         filterIndex++;
     }
+    if (category && category!='undefined') {
+      url += `&itemFilter(${filterIndex}).name=categoryID&itemFilter(${filterIndex}).value=${category}`;
+      filterIndex++;
+  }
     
     if (freeShipping === 'true') {
         url += `&itemFilter(${filterIndex}).name=FreeShippingOnly&itemFilter(${filterIndex}).value=true`;
@@ -156,7 +160,7 @@ app.get('/api/eBayFormData', async (req, res) => {
     url += `&outputSelector(0)=SellerInfo&outputSelector(1)=StoreInfo`;
     // console.log("URL",url);
     try {
-      console.log(url)
+      console.log("URL--",url)
         const ebayResponse = await axios.get(url);
         //res.json(ebayResponse.data);
 
@@ -255,9 +259,9 @@ app.get('/api/similarProductsData', async (req, res) => {
         const { itemId } = req.query;
         //console.log('ITEMID',itemId)
         let url = `https://svcs.ebay.com/MerchandisingService?OPERATION-NAME=getSimilarItems&SERVICE-NAME=MerchandisingService&SERVICEVERSION=1.1.0&CONSUMER-ID=${APPID}&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD&itemId=${itemId}&maxResults=20`
-        //console.log('URLLL',url)
+        console.log('URLLL',url)
         const relatedItem = await axios.get(url);
-        //console.log('HELLO',relatedItem.data)
+        console.log('HELLO',relatedItem.data)
         let items = relatedItem.data?.getSimilarItemsResponse?.itemRecommendations?.item || [];
 
         let processedData = items.map((item, index) => {
